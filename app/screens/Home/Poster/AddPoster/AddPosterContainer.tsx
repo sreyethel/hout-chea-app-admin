@@ -3,9 +3,10 @@ import { NavigationStackScreenProps } from 'react-navigation-stack';
 import ImagePicker from 'react-native-image-crop-picker';
 import { inject, observer } from 'mobx-react';
 import { createId } from '../../../../services/data.service';
-import { pageKey } from '../../../../services/mapping.service';
+import { pageKey, StatusObject } from '../../../../services/mapping.service';
 import { IBanner } from '../../../../interface/ads.interface';
 import AddPosterScreen from './AddPosterScreen';
+import { Alert } from 'react-native';
 
 interface AppProps extends NavigationStackScreenProps {
 	ads: any;
@@ -56,6 +57,12 @@ export default class AddPosterContainer extends React.Component<AppProps, State>
 
 	_onAddCategory = async () => {
 		await this.setState({ loading: true });
+		const { userCanActive } = this.props.auth
+		if (!userCanActive) {
+			Alert.alert("Poster add failed!")
+			this.setState({ loading: false });
+			return
+		}
 		const { profile } = this.props.auth;
 		const { name, description, path, index } = this.state;
 		const key: string = createId();
@@ -68,7 +75,7 @@ export default class AddPosterContainer extends React.Component<AppProps, State>
 			name: name,
 			description: description,
 			fileUrl: '',
-			status: null,
+			status: StatusObject().ACTIVE,
 			index: Number(index)
 		};
 

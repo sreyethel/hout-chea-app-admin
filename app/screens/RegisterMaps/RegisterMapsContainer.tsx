@@ -42,7 +42,6 @@ export default class RegisterMapContainer extends React.Component<Props, State> 
 					longitudeDelta: 0.03
 				}
 			});
-			console.log('this.state.coordinate', this.state.coordinate);
 		});
 
 		// await this.setState({
@@ -54,8 +53,6 @@ export default class RegisterMapContainer extends React.Component<Props, State> 
 		// 	}
 		// });
 		// const { latitude, longitude } = this.state;
-		// console.log('object', latitude);
-		// console.log('object', longitude);
 	};
 
 	_onMoving = () => {
@@ -64,7 +61,6 @@ export default class RegisterMapContainer extends React.Component<Props, State> 
 
 	_onMoveComplete = async (position: any) => {
 		await this.setState({ coordinate: position, oMoving: false });
-		console.log('this.state.coordinate', this.state.coordinate);
 	};
 
 	_onSaveMap = async () => {

@@ -22,7 +22,7 @@ export default class EditStoreInformationContainer extends React.Component<AppPr
 		super(props);
 		const { selectedStore, profile } = this.props.auth;
 		this.state = {
-			cover: selectedStore.avatar
+			cover: profile.avatar ? profile.avatar : ''
 		};
 	}
 
@@ -59,14 +59,14 @@ export default class EditStoreInformationContainer extends React.Component<AppPr
 	};
 
 	public render() {
-		const { selectedStore } = this.props.auth;
+		const { profile } = this.props.auth;
 		const { process } = this.props.store;
 		return (
 			<EditStoreInformationScreen
 				loading={process}
 				onSelectCamera={this._onSelectCamera}
 				onSelectImage={this._onSelectImage}
-				store={selectedStore}
+				store={profile}
 				navigation={this.props.navigation}
 				onUpdateStore={this._onUpdateStore}
 				image={this.state.cover}

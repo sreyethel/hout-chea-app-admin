@@ -12,9 +12,11 @@ interface Props {
   value: any
   onSearch: () => void
   disable?: boolean
+  CATE: any
 }
+
 export default (props: Props) => {
-  const { onCamera, onSearch, style, searchPlaceHolder, value, onChangeText, disable } = props
+  const { onCamera, onSearch, style, searchPlaceHolder, value, onChangeText, disable, CATE } = props
   return (
     <View style={styles.container}>
       <View style={[styles.rows, styles.header, style]}>
@@ -23,6 +25,7 @@ export default (props: Props) => {
           <TextInput
             editable={!disable}
             placeholder={searchPlaceHolder}
+            ref={CATE}
             style={{
               flex: 1,
               margin: 0,

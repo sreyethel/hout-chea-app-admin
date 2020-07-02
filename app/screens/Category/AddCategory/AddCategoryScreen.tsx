@@ -7,19 +7,26 @@ import _styles from '../../../_styles';
 import FastImage from 'react-native-fast-image';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Header from '../../../components/Header';
+import { SafeAreaView } from 'react-navigation';
+import { Dropdown } from 'react-native-material-dropdown';
 
 export interface AppProps {
 	navigation: any;
+	dataMarket: any
 	image: string;
 	name: string;
 	description: string;
-	onPresCamera: any;
-	onPresImage: any;
-	onSave: any;
+
+	onSave: (val: any) => void;
 	onChangeName: (val: any) => void;
+	onSelectedMarket: (val: any) => void;
 	onChangeDescription: (val: any) => void;
+	onPresCamera: () => void;
+	onPresImage: () => void;
 	loading: boolean;
 }
+
 
 export default class AddCategoryScreen extends React.Component<AppProps, any> {
 	constructor(props: AppProps) {
@@ -28,20 +35,40 @@ export default class AddCategoryScreen extends React.Component<AppProps, any> {
 			modal: false
 		};
 	}
+	market: any;
+	selectedMarket = async () => {
+		setTimeout(async () => {
+			const docs = await this.market.selectedItem();
+			await this.props.onSelectedMarket(docs);
+		}, 500);
+	};
 
 	public render() {
+		const {dataMarket} = this.props
 		return (
 			<View>
-				<ArrowBackHeader
-					onGoBack={() => this.props.navigation.goBack()}
-					color={modules.WHITE}
-					process={this.props.loading}
-					arrowIcon="x-circle"
+				<SafeAreaView style={{ backgroundColor: modules.PRIMARY }} />
+				<Header
 					title="Add Category"
-					rightText="save"
-					onRight={() => this.props.onSave()}
+					loading={this.props.loading}
+					onBack={() => this.props.navigation.goBack()}
+					onEdit={true}
+					isEdit={true}
+					onSave={this.props.onSave}
 				/>
 				<View style={styles.formGroups}>
+					{/* <Dropdown
+						ref={(ref: any) => (this.market = ref)}
+						valueExtractor={({ name }: any) => name}
+						label="Select Market"
+						data={dataMarket.slice(1,dataMarket.length)}
+						value={dataMarket[1].name}
+						onChangeText={async () => await this.selectedMarket()}
+						containerStyle={{
+							marginVertical:4,
+							width: (modules.VIEW_PORT_WIDTH - modules.BODY_HORIZONTAL_24) 
+						}}
+					/> */}
 					<OutlinedTextField
 						tintColor={modules.COLOR_MAIN}
 						style={{ marginTop: modules.BODY_HORIZONTAL }}
@@ -77,13 +104,13 @@ export default class AddCategoryScreen extends React.Component<AppProps, any> {
 								/>
 							</TouchableOpacity>
 						) : (
-							<TouchableOpacity
-								style={styles.imageContainer}
-								onPress={() => this.setState({ modal: !this.state.modal })}
-							>
-								<Image style={styles.image} source={require('./../../../../assets/download.png')} />
-							</TouchableOpacity>
-						)}
+								<TouchableOpacity
+									style={styles.imageContainer}
+									onPress={() => this.setState({ modal: !this.state.modal })}
+								>
+									<Image style={styles.image} source={require('./../../../../assets/download.png')} />
+								</TouchableOpacity>
+							)}
 					</View>
 				</View>
 
@@ -92,7 +119,7 @@ export default class AddCategoryScreen extends React.Component<AppProps, any> {
 					style={styles.modal}
 					isVisible={this.state.modal}
 				>
-					<View style={[ _styles.rows, styles.containerModal ]}>
+					<View style={[_styles.rows, styles.containerModal]}>
 						<TouchableOpacity
 							onPress={async () => {
 								this.setState({ modal: !this.state.modal });
@@ -147,7 +174,7 @@ const styles = StyleSheet.create({
 		height: modules.VIEW_PORT_WIDTH / 2,
 		marginHorizontal: modules.BODY_HORIZONTAL,
 
-		borderRadius: modules.RADIUS,
+		borderRadius: modules.RADIUS / 2,
 		overflow: 'hidden'
 	},
 	selectImageText: {

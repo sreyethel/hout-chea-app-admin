@@ -20,7 +20,7 @@ export default class ConfirmCodeScreen extends React.Component<Props, State> {
 		const { process, onGoBack, phone } = this.props;
 		return (
 			<View style={_styles.flx1}>
-				<ArrowBackHeader arrowIcon="x-circle" title="Confirm Code" onGoBack={onGoBack} />
+				<ArrowBackHeader  title="Confirm Code" onGoBack={onGoBack} />
 				<KeyboardAvoidingView
 					style={_styles.containerPrimary}
 					behavior={Platform.OS == 'ios' ? 'padding' : undefined}

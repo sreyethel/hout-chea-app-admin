@@ -9,7 +9,7 @@ export const trending = [
 	},
 	{
 		key: 2,
-		name: 'Collection'
+		name: 'High Quality'
 	}
 ];
 

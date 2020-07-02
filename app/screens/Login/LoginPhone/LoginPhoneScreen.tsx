@@ -17,7 +17,7 @@ export default ({ process, onSendCode, onGoBack }: Props) => {
 	return (
 		<View style={_styles.flx1}>
 			<View style={styles.container}>
-				<ArrowBackHeader arrowIcon="x-circle" color={modules.WHITE} title="Log in" onGoBack={onGoBack} />
+				<ArrowBackHeader  color={modules.WHITE} title="Log in" onGoBack={onGoBack} />
 				<KeyboardAvoidingView
 					style={styles.keyboardAvoid}
 					behavior={Platform.OS == 'ios' ? 'padding' : undefined}

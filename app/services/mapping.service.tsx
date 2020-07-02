@@ -1,6 +1,7 @@
 import { RNFirebase } from 'react-native-firebase';
 import moment from 'moment';
 import _ from 'lodash';
+import { createId } from './data.service';
 
 export function nFormatter(num: number, digits: number) {
 	var si = [
@@ -41,7 +42,7 @@ export function toArray(value: any) {
 
 export function fieldArrayValue(data: any, key: any) {
 	if (toArray(data).length === 0) {
-		return [ key ];
+		return [key];
 	} else {
 		return null;
 	}
@@ -80,9 +81,11 @@ export function toLookUp(val: any) {
 export function StatusObject() {
 	return {
 		ACTIVE: { key: 1, text: 'Active' },
-		DISABLED: { key: 2, text: 'Disabled' }
+		DISABLED: { key: 2, text: 'Disabled' },
+		DELETED: { key: 3, text: 'Deleted' },
 	};
 }
+
 
 export function toNumber(value: any) {
 	if (value === null || value === '' || value === undefined) {
@@ -91,3 +94,24 @@ export function toNumber(value: any) {
 	if (Number(value) === NaN) return 0;
 	return Number(value);
 }
+
+export function groupBy(array: any, groups: any, valueKey: any) {
+	var map = new Map;
+	groups = [].concat(groups);
+	return array.reduce((r: any, o: any) => {
+		groups.reduce((m: any, k: any, i: any, { length }: any) => {
+			var child;
+			if (m.has(o[k])) return m.get(o[k]);
+			if (i + 1 === length) {
+				child = Object
+					.assign(...groups.map((k: any) => ({ [k]: o[k] })), { [valueKey]: 0 });
+				r.push(child);
+			} else {
+				child = new Map;
+			}
+			m.set(o[k], child);
+			return child
+		}, map)[valueKey] += +o[valueKey];
+		return r
+	}, [])
+};

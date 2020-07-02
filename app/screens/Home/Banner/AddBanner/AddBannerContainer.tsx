@@ -5,9 +5,10 @@ import modules from '../../../../modules';
 import { inject, observer } from 'mobx-react';
 import { ICategory } from '../../../../interface/category.interface';
 import { createId } from '../../../../services/data.service';
-import { pageKey } from '../../../../services/mapping.service';
+import { pageKey, StatusObject } from '../../../../services/mapping.service';
 import AddBannerScreen from './AddBannerScreen';
 import { IBanner } from '../../../../interface/ads.interface';
+import { Alert } from 'react-native';
 
 interface AppProps extends NavigationStackScreenProps {
 	ads: any;
@@ -59,7 +60,24 @@ export default class AddBannerContainer extends React.Component<AppProps, State>
 	_onAddCategory = async () => {
 		await this.setState({ loading: true });
 		const { profile } = this.props.auth;
+		const { userCanActive } = this.props.auth
 		const { name, description, path, index } = this.state;
+		if (!name) {
+			Alert.alert("Invalid category name!")
+			this.setState({ loading: false });
+			return
+		}
+		if (!path) {
+			Alert.alert("Invalid image!")
+			this.setState({ loading: false });
+			return
+		}
+		if (!userCanActive) {
+			Alert.alert("Category add failed!")
+			this.setState({ loading: false });
+			return
+		}
+	
 		const key: string = createId();
 		let item: IBanner = {
 			key: key,
@@ -70,7 +88,7 @@ export default class AddBannerContainer extends React.Component<AppProps, State>
 			name: name,
 			description: description,
 			fileUrl: '',
-			status: null,
+			status: StatusObject().ACTIVE,
 			index: Number(index)
 		};
 

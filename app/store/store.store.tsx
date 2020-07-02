@@ -313,7 +313,6 @@ export default class Store {
 				callback(true);
 			})
 			.catch((error: any) => {
-				console.log('error', error);
 				this.process = false;
 				callback(null);
 			});
@@ -349,7 +348,6 @@ export default class Store {
 				this.process = false;
 			})
 			.catch((error: any) => {
-				console.log('error', error);
 				callback(null);
 				this.process = false;
 			});
@@ -411,7 +409,6 @@ export default class Store {
 				this.process = false;
 			})
 			.catch((error: any) => {
-				console.log('error', error);
 				callback(null);
 				this.process = false;
 			});
@@ -423,7 +420,6 @@ export default class Store {
 	// 	const store = await storeRef().doc(key).get();
 	// 	this.storeDetail = pushToObject(store);
 	// 	this.process = false;
-	// 	console.log('this.process', this.process);
 	// }
 
 	@action
@@ -459,7 +455,6 @@ export default class Store {
 			.catch((error) => {
 				this.process = false;
 				callback(false);
-				console.log('error', error);
 			});
 	}
 
@@ -476,7 +471,6 @@ export default class Store {
 				this.process = false;
 			})
 			.catch((e: any) => {
-				// console.log('e', e)
 				callback(null);
 			});
 	}

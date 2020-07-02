@@ -64,17 +64,6 @@ export default class SelectMapScreen extends React.Component<AppProps, AppState>
 
 		});
 
-		// await this.setState({
-		// 	latitude: 11.566191,
-		// 	longitude: 104.890592,
-		// 	coordinate: {
-		// 		latitude: 11.566191,
-		// 		longitude: 104.890592
-		// 	}
-		// });
-		// const { latitude, longitude } = this.state;
-		// console.log('object', latitude);
-		// console.log('object', longitude);
 	};
 
 	_onMoving = () => {
@@ -96,8 +85,8 @@ export default class SelectMapScreen extends React.Component<AppProps, AppState>
 		const { onMoving } = this.props;
 		return (
 			<View style={styles.headerContainer}>
-				<TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-					<Text style={styles.textContinue}>Back</Text>
+				<TouchableOpacity onPress={() => this.props.navigation.goBack()} disabled={true}>
+					<Text style={[styles.textContinue,{opacity:0}]}>Back</Text>
 				</TouchableOpacity>
 				<Text style={styles.labelTitle}>Location on Map</Text>
 				<TouchableOpacity onPress={() => this._onSaveMap()} disabled={onMoving}>
@@ -148,19 +137,20 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		marginHorizontal: modules.BODY_HORIZONTAL_12,
+		paddingHorizontal: modules.BODY_HORIZONTAL_12,
 		borderBottomColor: modules.BORDER_COLOR,
 		paddingBottom: modules.BODY_HORIZONTAL_12,
-		borderBottomWidth: 1
+		borderBottomWidth: 1,
+		backgroundColor:modules.PRIMARY
 	},
 	labelTitle: {
 		fontSize: modules.FONT,
 		fontWeight: '500',
-		color: modules.TEXT
+		color: modules.WHITE,
 	},
 	textContinue: {
 		fontSize: modules.FONT_P,
-		color: modules.COLOR_MAIN,
+		color: modules.WHITE,
 		fontWeight: '500'
 	},
 	MapStyle: {

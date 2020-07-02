@@ -8,6 +8,7 @@ import RnBarChart from '../../components/RnBarChart';
 import { FontGSansBold, fontGSans } from '../../../functions/customFont';
 import MenuButton from '../../components/MenuButton';
 import LinearGradient from 'react-native-linear-gradient';
+import MainHeader from '../../components/MainHeader';
 
 interface Props {
 	onProduct: () => void;
@@ -18,6 +19,8 @@ interface Props {
 	dataLastSevenDays: Array<any>;
 	loadingBarChart: boolean;
 	goTo: (item: any) => void;
+	openMessenger: () => void;
+	badge: number
 }
 
 const height = modules.VIEW_PORT_WIDTH / 4;
@@ -26,14 +29,16 @@ const pad = (d: any) => {
 	return d < 10 ? '' + d.toString() : d.toString();
 };
 
-export default ({ goTo, order, dataStatistic, dataLastSevenDays, loadingBarChart }: Props) => {
+export default ({ badge, openMessenger, goTo, order, dataStatistic, dataLastSevenDays, loadingBarChart }: Props) => {
 	return (
-		<View style={[ _styles.flx1, _styles.background ]}>
+		<View style={[_styles.flx1, _styles.background]}>
 			<SafeAreaView style={{ backgroundColor: modules.COLOR_MAIN }} />
-			<StatusBar barStyle="dark-content" backgroundColor={modules.COLOR_MAIN} />
-			<HomeHeader />
-			<ScrollView style={_styles.flx1}>
-				{/* <HomeDetail account={account} store={store} /> */}
+			<StatusBar barStyle="light-content" backgroundColor={modules.COLOR_MAIN} />
+			<MainHeader
+				badge={badge}
+				onNoti={() => goTo('Noti')}
+			/>
+			<ScrollView showsVerticalScrollIndicator={false} style={_styles.flx1}>
 				<View style={styles.menuContainer}>
 					<View style={_styles.row}>
 						<MenuButton click={() => goTo('Product')} title="Product" image={modules.PRODUCT} />
@@ -63,7 +68,7 @@ export default ({ goTo, order, dataStatistic, dataLastSevenDays, loadingBarChart
 						<View style={styles.centerVerticalLine} />
 						<MenuButton click={() => goTo('Promotion')} title="Promotion" image={modules.PROMOTION} />
 						<View style={styles.centerVerticalLine} />
-						<MenuButton click={() => goTo('FeedBack')} title="Feed Back" image={modules.COMMENT} />
+						<MenuButton click={() => goTo('Poster')} title="Poster" image={modules.POSTER} />
 					</View>
 					<LinearGradient
 						style={{ width: '100%', height: 1 }}
@@ -72,31 +77,31 @@ export default ({ goTo, order, dataStatistic, dataLastSevenDays, loadingBarChart
 						end={{ x: 0, y: 0 }}
 					/>
 					<View style={_styles.row}>
-						<MenuButton click={() => goTo('Poster')} title="Poster" image={modules.POSTER} />
+						<MenuButton click={() => goTo('FeedBack')} title="Feedback" image={modules.COMMENT} />
 						<LinearGradient
 							style={{ width: 0.7, height: height }}
 							colors={modules.GRADIENT_LINE_2}
 							start={{ x: 0, y: 0 }}
 							end={{ x: 0, y: 1 }}
 						/>
-						<MenuButton click={() => goTo('Location')} title="Locations" image={modules.LOCATION} />
+						<MenuButton click={() => goTo('Location')} title="Location" image={modules.LOCATION} />
 						<LinearGradient
 							style={{ width: 0.7, height: height }}
 							colors={modules.GRADIENT_LINE_2}
 							start={{ x: 0, y: 0 }}
 							end={{ x: 0, y: 1 }}
 						/>
-						<MenuButton click={() => goTo('Profile')} title="User" image={modules.USER} />
+						<MenuButton click={() => goTo('Profile')} title="Profile" image={modules.USER} />
 					</View>
 				</View>
 				<View style={styles.orderRow}>
 					<View style={styles.halfPieChart}>
 						<RnPieChart allOrder={order.length} dataStatistic={dataStatistic} />
 					</View>
-					<View style={styles.halfPieChart}>
+					<View style={[styles.halfPieChart, { paddingLeft: 12 }]}>
 						<View style={styles.row}>
 							<View style={_styles.rows}>
-								<View style={[ styles.orderColor, { backgroundColor: modules.PROGRESS_COLOR[1] } ]} />
+								<View style={[styles.orderColor, { backgroundColor: modules.PROGRESS_COLOR[0] }]} />
 								<Text style={styles.countSubOrder}>{pad(dataStatistic[0].value)}</Text>
 							</View>
 							<View style={styles.center}>
@@ -105,7 +110,7 @@ export default ({ goTo, order, dataStatistic, dataLastSevenDays, loadingBarChart
 						</View>
 						<View style={styles.row}>
 							<View style={_styles.rows}>
-								<View style={[ styles.orderColor, { backgroundColor: modules.PROGRESS_COLOR[4] } ]} />
+								<View style={[styles.orderColor, { backgroundColor: modules.PROGRESS_COLOR[1] }]} />
 								<Text style={styles.countSubOrder}>{pad(dataStatistic[1].value)}</Text>
 							</View>
 							<View style={styles.center}>
@@ -114,8 +119,26 @@ export default ({ goTo, order, dataStatistic, dataLastSevenDays, loadingBarChart
 						</View>
 						<View style={styles.row}>
 							<View style={_styles.rows}>
-								<View style={[ styles.orderColor, { backgroundColor: modules.PROGRESS_COLOR[0] } ]} />
+								<View style={[styles.orderColor, { backgroundColor: modules.PROGRESS_COLOR[2] }]} />
 								<Text style={styles.countSubOrder}>{pad(dataStatistic[2].value)}</Text>
+							</View>
+							<View style={styles.center}>
+								<Text style={styles.sublabel}>Delivery</Text>
+							</View>
+						</View>
+						<View style={styles.row}>
+							<View style={_styles.rows}>
+								<View style={[styles.orderColor, { backgroundColor: modules.PROGRESS_COLOR[3] }]} />
+								<Text style={styles.countSubOrder}>{pad(dataStatistic[3].value)}</Text>
+							</View>
+							<View style={styles.center}>
+								<Text style={styles.sublabel}>Reject</Text>
+							</View>
+						</View>
+						<View style={styles.row}>
+							<View style={_styles.rows}>
+								<View style={[styles.orderColor, { backgroundColor: modules.PROGRESS_COLOR[4] }]} />
+								<Text style={styles.countSubOrder}>{pad(dataStatistic[4].value)}</Text>
 							</View>
 							<View style={styles.center}>
 								<Text style={styles.sublabel}>Complete</Text>
@@ -123,11 +146,11 @@ export default ({ goTo, order, dataStatistic, dataLastSevenDays, loadingBarChart
 						</View>
 						<View style={styles.row}>
 							<View style={_styles.rows}>
-								<View style={[ styles.orderColor, { backgroundColor: modules.PROGRESS_COLOR[3] } ]} />
-								<Text style={styles.countSubOrder}>{pad(dataStatistic[3].value)}</Text>
+								<View style={[styles.orderColor, { backgroundColor: modules.PROGRESS_COLOR[5] }]} />
+								<Text style={styles.countSubOrder}>{pad(dataStatistic[5].value)}</Text>
 							</View>
 							<View style={styles.center}>
-								<Text style={styles.sublabel}>Cancel</Text>
+								<Text style={styles.sublabel}>Return</Text>
 							</View>
 						</View>
 					</View>
@@ -161,7 +184,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 		width: modules.VIEW_PORT_WIDTH,
-
 		backgroundColor: modules.WHITE,
 		borderRadius: modules.RADIUS / 2,
 		..._styles.shadowSmall,

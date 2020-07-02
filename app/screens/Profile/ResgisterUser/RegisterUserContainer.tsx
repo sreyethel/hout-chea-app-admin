@@ -15,13 +15,20 @@ export default class RegisterUserContainer extends React.Component<AppProps, any
 		super(props);
 		this.state = {
 			name: '',
-			email: ''
+			email: '',
+			coordinate: {
+				latitude: 11.5564,
+				longitude: 104.9282,
+				latitudeDelta: 0.02,
+				longitudeDelta: 0.02
+			},
+			address: 'Phnom Penh'
 		};
 	}
 
 	_onSave = async () => {
-		const { name, email } = this.state;
-		await this.props.auth.createAccount(name, email);
+		const { name, email, coordinate, address } = this.state;
+		await this.props.auth.createAccount(name, email, coordinate, address);
 		this.props.navigation.navigate('Home');
 	};
 

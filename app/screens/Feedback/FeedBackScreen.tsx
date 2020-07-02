@@ -18,11 +18,18 @@ export default class FeedBackScreen extends React.Component<AppProps, any> {
 
 	public render() {
 		return (
-			<View style={[ _styles.flx1, _styles.background ]}>
-				<Header goBack={() => this.props.navigation.goBack()} title="Feed Back" />
-
+			<View style={[_styles.flx1, _styles.background]}>
 				<FlatList
 					data={this.props.dataFeedBack.slice()}
+					ListFooterComponent={() => {
+						return <View style={{ marginBottom: modules.VIEW_PORT_HEIGHT / 4 }}>
+							{
+								this.props.dataFeedBack.length > 0 ? null
+									: <Text style={_styles.noData}>No Data</Text>
+							}
+
+						</View>;
+					}}
 					renderItem={({ item }: any) => {
 						return (
 							<View style={styles.container}>

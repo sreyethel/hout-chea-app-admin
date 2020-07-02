@@ -13,6 +13,7 @@ export interface ICategory {
 	status: any;
 	description: any;
 	fileUrl: any;
+	market: any
 }
 
 export interface ISubCategory {

@@ -25,7 +25,8 @@ export default class OrderByStatusContainer extends React.Component<AppProps, Ap
 
 	async componentDidMount() {
 		const { selectedStatusKey } = this.props.order;
-		await this.props.order.fetchOrder(selectedStatusKey);
+		const { profile } = this.props.auth;
+		await this.props.order.fetchOrder(profile, selectedStatusKey);
 		switch (selectedStatusKey) {
 			case null:
 				await this.setState({ title: 'All Order' });

@@ -5,7 +5,7 @@ import modules from '../../../modules';
 import { inject, observer } from 'mobx-react';
 import { ICategory } from '../../../interface/category.interface';
 import { createId } from '../../../services/data.service';
-import { pageKey } from '../../../services/mapping.service';
+import { pageKey, StatusObject } from '../../../services/mapping.service';
 import EditCategoryScreen from './EditCategoryScreen';
 
 interface AppProps extends NavigationStackScreenProps {
@@ -33,7 +33,7 @@ export default class EditCategoryContainer extends React.Component<AppProps, Sta
 		};
 	}
 
-	componentDidMount() {}
+	componentDidMount() { }
 
 	_onSelectImage = () => {
 		ImagePicker.openPicker({
@@ -56,7 +56,7 @@ export default class EditCategoryContainer extends React.Component<AppProps, Sta
 	};
 
 	_onAddCategory = async () => {
-		await this.setState({ loading: true });
+		 this.setState({ loading: true });
 		const { profile } = this.props.auth;
 		const { name, description, path } = this.state;
 		const selectedItem = this.props.navigation.getParam('item');
@@ -69,22 +69,31 @@ export default class EditCategoryContainer extends React.Component<AppProps, Sta
 			name: name ? name : selectedItem.name,
 			description: description ? description : selectedItem.description,
 			fileUrl: selectedItem.fileUrl,
-			status: null
+			status: StatusObject().ACTIVE,
+			market: selectedItem.market
 		};
 
 		path
 			? await this.props.category.uploadPhoto(path, (res: any) => {
-					if (res) {
-						item.fileUrl = res;
-					} else {
-						item.fileUrl = selectedItem.fileUrl;
-					}
-				})
+				if (res) {
+					item.fileUrl = res;
+				} else {
+					item.fileUrl = selectedItem.fileUrl;
+				}
+			})
 			: null;
 
-		await this.props.category.updateCategory(item);
-		this.setState({ loading: false });
-		this.props.navigation.goBack();
+		await this.props.category.updateCategory(item,(success:any)=>{
+			if(success){
+				this.setState({ loading: false });
+				this.props.navigation.goBack();
+			}else{
+				this.setState({ loading: false });
+			}
+		
+		});
+	
+	
 	};
 
 	public render() {

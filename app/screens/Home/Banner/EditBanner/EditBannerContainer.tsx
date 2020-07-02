@@ -3,7 +3,7 @@ import { NavigationStackScreenProps } from 'react-navigation-stack';
 import ImagePicker from 'react-native-image-crop-picker';
 import { inject, observer } from 'mobx-react';
 import { createId } from '../../../../services/data.service';
-import { pageKey } from '../../../../services/mapping.service';
+import { pageKey, StatusObject } from '../../../../services/mapping.service';
 import { IBanner } from '../../../../interface/ads.interface';
 import EditBannerScreen from './EditBannerScreen';
 
@@ -70,13 +70,12 @@ export default class EditBannerContainer extends React.Component<AppProps, State
 			name: name ? name : selectedItem.name,
 			description: description ? description : selectedItem.description,
 			fileUrl: selectedItem.fileUrl,
-			status: null,
+			status: StatusObject().ACTIVE,
 			index: index ? Number(index) : selectedItem.index
 		};
 		path
 			? await this.props.ads.uploadPhoto(path, async (res: any) => {
 					if (res) {
-						await this.props.ads.deleteFile(selectedItem.fileUrl);
 						item.fileUrl = res;
 					} else {
 						item.fileUrl = selectedItem.fileUrl;

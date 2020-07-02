@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, View, SafeAreaView, Image, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, View, SafeAreaView, Image, TouchableOpacity, Platform } from 'react-native';
 import modules from '../modules';
 import _styles from '../_styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -14,14 +14,15 @@ export default ({ onSignIn, onSignUp }: Props) => {
 	{
 		return (
 			<View style={_styles.flx1}>
-				<View style={[ _styles.centerMode, _styles.flx1 ]}>
-					<Image source={modules.LOGO} style={styles.LOGO} />
+				<View style={[_styles.centerMode, _styles.flx1]}>
+					<Image source={require('../modules/assets/logo.png')} style={styles.LOGO} />
 					<Text style={styles.titleLogo}>ហ៊ួត​ ជា</Text>
 				</View>
 				<SafeAreaView style={{ backgroundColor: modules.WHITE, overflow: 'hidden' }}>
 					<View style={styles.authBox}>
 						<View style={styles.titleBox}>
 							<Text style={styles.title}>Login to your account</Text>
+							<Text style={styles.subTitle}>Enter your phone number to continue</Text>
 						</View>
 						<TouchableOpacity onPress={onSignIn} activeOpacity={0.5} style={styles.phone}>
 							<Image source={modules.FLAG} style={styles.flag} />
@@ -30,13 +31,13 @@ export default ({ onSignIn, onSignUp }: Props) => {
 							<Text style={styles.phoneText}>Your phone number</Text>
 						</TouchableOpacity>
 						<View style={styles.line} />
-						{/* <View style={styles.signInWith}>
-							<TouchableOpacity style={styles.createAccount} onPress={onSignUp}>
-								<Text style={styles.withText}>Create your store</Text>
-								<Feather name="chevron-right" style={styles.icon} />
-							</TouchableOpacity>
-						</View> */}
 					</View>
+					<TouchableOpacity 
+					onPress={onSignUp}
+					style={{paddingHorizontal:12, flexDirection:'row'}}>
+						<Text>Create your store</Text>
+						<Icon name="chevron-right" style={styles.arrow} />
+					</TouchableOpacity>
 				</SafeAreaView>
 			</View>
 		);
@@ -83,17 +84,17 @@ const styles = StyleSheet.create({
 		...FontGSansSemiBold,
 		fontSize: modules.FONT_H4,
 		color: modules.COLOR_MAIN,
-		paddingHorizontal: modules.BODY_HORIZONTAL,
-		paddingTop: modules.BODY_HORIZONTAL
+		paddingTop: modules.BODY_HORIZONTAL/4
 	},
 	titleBox: {
-		paddingHorizontal: modules.BODY_HORIZONTAL,
+		// paddingHorizontal: modules.BODY_HORIZONTAL,
 		paddingVertical: modules.BODY_HORIZONTAL_24,
-		justifyContent: 'center',
-		alignItems: 'center'
+		// justifyContent: 'center',
+		// alignItems: 'center'
 	},
 	authBox: {
-		..._styles.centerMode
+		// ..._styles.centerMode,
+		marginHorizontal: modules.BODY_HORIZONTAL
 	},
 	signInWith: {
 		paddingBottom: modules.BODY_HORIZONTAL,
@@ -127,12 +128,12 @@ const styles = StyleSheet.create({
 		paddingLeft: modules.BODY_HORIZONTAL / 2
 	},
 	countryCode: {
-		fontSize: modules.FONT_H6,
-		...fontNormal
+		fontSize: Platform.OS==='ios'?modules.FONT_H6:modules.FONT,
+		...fontNormal ,
 	},
 	phoneText: {
 		color: modules.SUB_TEXT,
-		fontSize: modules.FONT_H6,
+		fontSize: Platform.OS==='ios'?modules.FONT_H6:modules.FONT,
 		...fontLight,
 		marginLeft: modules.BODY_HORIZONTAL / 2
 	},
@@ -140,9 +141,9 @@ const styles = StyleSheet.create({
 		paddingVertical: modules.BODY_HORIZONTAL,
 		flexDirection: 'row',
 		alignItems: 'center',
-		paddingHorizontal: modules.BODY_HORIZONTAL * 2,
+		paddingHorizontal: Platform.OS==='ios'?modules.BODY_HORIZONTAL * 4:modules.BODY_HORIZONTAL * 2.5,
 		borderWidth: 2,
-		borderRadius: modules.RADIUS,
+		borderRadius: modules.RADIUS / 2,
 		borderColor: modules.COLOR_MAIN
 	},
 	flag: {

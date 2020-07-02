@@ -6,9 +6,11 @@ import PromotionScreen from './PromotionScreen';
 
 export interface AppProps extends NavigationStackScreenProps {
 	ads: any;
+	auth: any;
+	product: any
 }
 
-@inject('ads')
+@inject('ads', 'auth', 'product')
 @observer
 export default class PromotionContainer extends React.Component<AppProps, any> {
 	constructor(props: AppProps) {
@@ -20,23 +22,28 @@ export default class PromotionContainer extends React.Component<AppProps, any> {
 	}
 
 	_onDelete = (item: any) => {
+		const { profile } = this.props.auth
 		Alert.alert(
 			'Delete',
 			'Are you sure you want to delete this Promotion?',
 			[
-				{ text: 'Yes', onPress: () => this.props.ads.deletePromotion(item) },
+				{ text: 'Yes', onPress: () => this.props.ads.deletePromotion(profile, item) },
 				{ text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' }
 			],
 			{ cancelable: false }
 		);
 	};
 
-	_onEdit = (item: any) => {
-		this.props.navigation.navigate('EditPromotion', { item: item });
+	_onEdit = async (item: any) => {
+		await this.props.product.selectedProduct(item)
+		await this.props.product.selectedTotalQty(item.totalQty)
+		this.props.navigation.navigate('EditPromotion');
+
 	};
 
 	public render() {
 		const { dataPromotion } = this.props.ads;
+		const { userCanActive } = this.props.auth
 
 		return (
 			<PromotionScreen
@@ -44,6 +51,7 @@ export default class PromotionContainer extends React.Component<AppProps, any> {
 				onEdit={this._onEdit}
 				data={dataPromotion}
 				navigation={this.props.navigation}
+				userCanActive={userCanActive}
 			/>
 		);
 	}

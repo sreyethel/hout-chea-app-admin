@@ -8,58 +8,58 @@ import modules from './../modules';
 
 export interface AppProps {
 	title: string;
-	fileUrl: string;
-	price: any;
-	shipping: any;
 	qty?: number;
 	bgColor: Array<any>;
 	desc: string;
 	ClickTrash?: any;
 	click?: any;
 	clickMore?: any;
+	data: any
 }
 
-export default ({ title, fileUrl, price, shipping, desc, clickMore }: AppProps) => {
+export default ({ data, clickMore }: AppProps) => {
 	return (
-		<View style={styles.container}>
+		<TouchableOpacity style={styles.container} onPress={clickMore}>
 			<View style={_styles.center}>
-				{fileUrl ? (
+				{data.cover ? (
 					<View style={styles.imgContainer}>
-						<FastImage style={styles.img} source={{ uri: fileUrl }} />
+						<FastImage style={styles.img} source={{ uri: data.cover }} />
 					</View>
 				) : (
-					<View style={styles.imgContainer}>
-						<Image style={styles.img} source={require('./../../assets/product-placeholder.jpg')} />
-					</View>
-				)}
+						<View style={styles.imgContainer}>
+							<Image style={styles.img} source={require('./../../assets/product-placeholder.jpg')} />
+						</View>
+					)}
 			</View>
 			<View style={styles.textContainer}>
 				<View>
 					<View style={styles.titleContainer}>
 						<Text style={styles.title} numberOfLines={2}>
-							{title}
+							{data.name}
 						</Text>
 						<TouchableOpacity onPress={clickMore}>
 							<Icon style={styles.iconClose} name="more-horizontal" />
 						</TouchableOpacity>
 					</View>
-					<Text style={styles.shipping}>CODE :{shipping}</Text>
+
+				<Text style={styles.shipping}>In Stock : {data.totalQty} {data.unitMeasurement.code}</Text>
 				</View>
 
 				<View style={styles.priceContainer}>
-					<View style={styles.qtyPicker}>
-						<View>
-							<Text numberOfLines={2} style={styles.textUnit}>
-								{desc}
-							</Text>
-						</View>
-					</View>
-					<View>
-						<Text style={styles.price}>${price}</Text>
+					<View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+
+						{
+							data.umPrice.map((item: any) => {
+								return (
+									<Text style={styles.price}>{item.code}: ${item.price}</Text>
+								)
+							})
+						}
+
 					</View>
 				</View>
 			</View>
-		</View>
+	</TouchableOpacity>
 	);
 };
 
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
 	imgContainer: {
 		width: (MODULE.VIEW_PORT_WIDTH - MODULE.BODY_HORIZONTAL * 4) / 4,
 		height: (MODULE.VIEW_PORT_WIDTH - MODULE.BODY_HORIZONTAL * 4) / 4,
-		borderRadius: MODULE.RADIUS,
+		borderRadius: MODULE.RADIUS/2,
 		overflow: 'hidden'
 	},
 	text: {
@@ -104,9 +104,10 @@ const styles = StyleSheet.create({
 	},
 	price: {
 		fontWeight: '700',
-
+		marginRight: 4,
+		marginBottom: 4,
 		color: 'rgba(0,0,0,0.8)',
-		fontSize: MODULE.FONT,
+		fontSize: MODULE.FONT - 3,
 		paddingHorizontal: MODULE.BODY_HORIZONTAL,
 		paddingVertical: MODULE.BODY_HORIZONTAL / 2,
 		backgroundColor: MODULE.BORDER_COLOR,

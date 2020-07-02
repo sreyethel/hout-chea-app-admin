@@ -1,92 +1,88 @@
-import { action, } from "mobx";
-import { notificationsRef, initialMessaging } from "../services/messaging.service";
-import firebase from "react-native-firebase";
+import { action, observable } from 'mobx';
+import { notificationsRef, initialMessaging } from '../services/messaging.service';
+import firebase from 'react-native-firebase';
 import AsyncStorage from '@react-native-community/async-storage';
-import { batchRef, createId, userRef } from "../services/data.service";
-import { fieldArrayValue, userObject } from "../services/mapping.service";
+import { NotificationOpen } from 'react-native-firebase/notifications'
+import { storeRef, storeAccountRef } from '../services/data.service';
 
-export default class Messaging {
-  notificationOpen: any = null;
-  notificationOpenedListener: any = null;
-  notificationListener: any = null;
-  messageListener: any = null;
-  fcmToken: any = null;
+export default class MessagingStore {
+	notificationOpen: any = null;
+	notificationOpenedListener: any = null;
+	notificationListener: any = null;
+	notificationListenerDisplay: any = null;
+	messageListener: any = null;
+	fcmToken: any = '';
+	@observable key: any = null
+	@observable openNoti: boolean = false
+	@observable title: string = ''
+	@observable body: string = ''
 
-  @action
-  async checkPermission() {
-    this.fcmToken = await initialMessaging();
-  }
+	@action
+	async checkPermission() {
+		this.fcmToken = await initialMessaging();
+	}
 
-  @action
-  async setUserToken(user: any) {
-    const { key, token } = user;
-    let fcmToken = await AsyncStorage.getItem('fcmToken');
-    if (!fcmToken) {
-      fcmToken = await firebase.messaging().getToken();
-      if (fcmToken) {
-        await AsyncStorage.setItem('fcmToken', fcmToken);
-        const data = fieldArrayValue(token, fcmToken);
-        if (data) {
-          const batch = batchRef();
-          const keyDevice = createId();
-          batch.update(userRef().doc(key), { token: data })
-          batch.set(userRef().doc(key).collection("devices").doc(`${keyDevice}`), {
-            key: keyDevice,
-            token: fcmToken,
-            create_by: userObject(user),
-            create_date: new Date()
-          });
-          batch.commit();
-        }
-      }
-    }
-  }
+	@action
+	async setUserToken(store: any) {
+		let fcmToken: any = await AsyncStorage.getItem('fcmToken');
+		if (!fcmToken) {
+			fcmToken = await firebase.messaging().getToken();
+			if (fcmToken) {
+				const mainToken = fcmToken
+				await AsyncStorage.setItem('fcmToken', mainToken);
+			}
+		}
+		const item = {
+			key: fcmToken,
+			name: 'fcmToken'
+		}
+		if (store.isAdmin == true) {
+			await storeRef().doc('gcz7Zu6VOZnoc0XiSvNH').collection("fcmToken").doc(fcmToken).set(item)
+		} else {
+			await storeAccountRef().doc(store.key).collection("fcmToken").doc(fcmToken).set(item)
+		}
 
-  @action
-  async initialNotification() {
-    this.notificationListener = notificationsRef().onNotification((notification) => {
-      const { title, body } = notification;
-      console.log(notification)
-      this.showNotification(title, body);
-    });
-    this.notificationOpenedListener = notificationsRef().onNotificationOpened((notificationOpen) => {
-      const { title, body } = notificationOpen.notification;
-      console.log(notificationOpen.notification)
-      this.showNotification(title, body);
-    });
-    const notificationOpen = await notificationsRef().getInitialNotification();
-    if (notificationOpen) {
-      const { title, body } = notificationOpen.notification;
-      console.log(notificationOpen.notification)
-      this.showNotification(title, body);
-    }
-    firebase.messaging().subscribeToTopic("HoutChea");
-    this.messageListener = firebase.messaging().onMessage((message) => {
-      const { title, body } = message;
-      this.showNotification(title, body);
-      console.log(message);
-    });
-  }
+	}
 
-  @action
-  showNotification(title: string, body: string) {
-    const notification = new firebase.notifications.Notification()
-      .setNotificationId('notificationId')
-      .setTitle('HoutChea')
-      .setBody('Confirm code')
-      .setData({
-        key1: 'value1',
-        key2: 'value2',
-      });
-    firebase.notifications().displayNotification(notification)
-  }
+	@action
+	async initialNotification(navigation: any) {
+		this.notificationOpenedListener = notificationsRef().onNotificationOpened((notificationOpen) => {
+			const { data } = notificationOpen.notification;
+			navigation.navigate('NOTI')
+		});
+		this.notificationListener = await notificationsRef().getInitialNotification().then((notificationOpen: NotificationOpen) => {
+			if (notificationOpen) {
+				const { data } = notificationOpen.notification;
+				navigation.navigate('NOTI')
+			}
+		});
 
-  @action
-  stopListener() {
-    if (this.notificationOpenedListener) this.notificationOpenedListener();
-    if (this.notificationListener) this.notificationListener();
-    if (this.notificationOpen) this.notificationOpen();
-    if (this.messageListener) this.messageListener()
-  }
+		this.messageListener = firebase.messaging().onMessage((message) => {
+			const { data } = message;
+			this.showNotification(data)
 
+		});
+	}
+
+	@action
+	showNotification(data: any) {
+		const { title, body, key } = data;
+		const notification = new firebase.notifications.Notification()
+			.setNotificationId('notificationId')
+			.setTitle(title)
+			.setBody(body)
+			.setData({
+				key: key,
+				title: title,
+
+			});
+		firebase.notifications().displayNotification(notification);
+	}
+	@action
+	stopListener() {
+		if (this.notificationOpenedListener) this.notificationOpenedListener();
+		if (this.notificationListener) this.notificationListener();
+		if (this.notificationOpen) this.notificationOpen();
+		if (this.messageListener) this.messageListener();
+	}
 }

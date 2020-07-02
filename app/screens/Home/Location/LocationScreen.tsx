@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native';
 import _styles from '../../../_styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FIcon from 'react-native-vector-icons/FontAwesome5';
@@ -7,12 +7,20 @@ import FIcon from 'react-native-vector-icons/FontAwesome5';
 import modules from '../../../modules';
 import Header from '../../../components/Header';
 import Modal from 'react-native-modal';
+import MapView, { PROVIDER_GOOGLE,Marker } from 'react-native-maps';
 
 export interface AppProps {
+	loading: boolean;
+	latitude: any;
+	longitude: any;
+	coords: any;
+	defaultCoords: any;
 	navigation: any;
 	data: any;
 	onEdit: (item: any) => void;
 	onDelete: (item: any) => void;
+	userCanActive: any
+
 }
 
 export default class LocationScreen extends React.Component<AppProps, any> {
@@ -22,34 +30,31 @@ export default class LocationScreen extends React.Component<AppProps, any> {
 	}
 
 	_onShowModal = (item?: any) => {
+		const {userCanActive}= this.props
+		if(!userCanActive){
+			Alert.alert("Invalid map!")
+			return
+		}
 		this.setState({ modal: !this.state.modal });
 		item ? this.setState({ item: item }) : null;
 	};
-
+	mapRef: any;
 	public render() {
 		return (
-			<View style={[ _styles.flx1, _styles.background ]}>
-				<Header goBack={() => this.props.navigation.goBack()} title=" Branch Locations" />
-				<FlatList
-					ListFooterComponent={() => {
-						return <View style={{ marginBottom: modules.VIEW_PORT_HEIGHT / 4 }} />;
-					}}
-					data={this.props.data}
-					renderItem={({ item }) => {
-						return (
-							<View style={styles.componentBox}>
-								<Text style={styles.title}>{item.name}</Text>
-								<TouchableOpacity onPress={() => this._onShowModal(item)}>
-									<FIcon color="#999" size={modules.FONT} name="ellipsis-h" />
-								</TouchableOpacity>
-							</View>
-						);
-					}}
-				/>
-				<TouchableOpacity onPress={() => this.props.navigation.navigate('AddLocation')} style={styles.chip}>
-					<Icon name="add" size={modules.FONT_H3} color="#fff" />
-				</TouchableOpacity>
-
+			<View style={[_styles.flx1, _styles.background]}>
+		<MapView
+							pointerEvents="none"
+							ref={(ref) => (this.mapRef = ref)}
+							region={this.props.coords.latitude ? this.props.coords : this.props.defaultCoords}
+							provider={PROVIDER_GOOGLE}
+							// onRegionChange={this.props.onMoveMap}
+							style={styles.MapStyle}
+							initialRegion={this.props.coords.latitude ? this.props.coords : this.props.defaultCoords}
+						>
+							<Marker
+								coordinate={this.props.coords.latitude ? this.props.coords : this.props.defaultCoords}
+							/>
+						</MapView>
 				<Modal
 					backdropTransitionOutTiming={0}
 					onBackdropPress={() => this._onShowModal()}
@@ -58,7 +63,7 @@ export default class LocationScreen extends React.Component<AppProps, any> {
 					isVisible={this.state.modal}
 				>
 					<View style={styles.modalBox}>
-						<View style={_styles.row}> 
+						<View style={_styles.row}>
 							<TouchableOpacity
 								onPress={() => {
 									this._onShowModal();
@@ -155,5 +160,8 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.27,
 		shadowRadius: 4.65,
 		elevation: 6
-	}
+	},
+	MapStyle: {
+		height: modules.VIEW_PORT_WIDTH / 2
+	},
 });

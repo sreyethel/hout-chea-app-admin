@@ -7,13 +7,14 @@ import { Alert } from 'react-native';
 export interface AppProps {
 	navigation: any;
 	category: any;
+	auth: any;
 }
 
 export interface AppState {
 	category: any;
 }
 
-@inject('category')
+@inject('category', 'auth')
 @observer
 export default class SubCategoryContainer extends React.Component<AppProps, AppState> {
 	constructor(props: AppProps) {
@@ -24,17 +25,17 @@ export default class SubCategoryContainer extends React.Component<AppProps, AppS
 	}
 
 	componentDidMount() {
-		const item = this.props.navigation.getParam('item');
-		this.setState({ category: item });
-		this.props.category.fetchSubCategory(item.key);
+		const { selectedCategory } = this.props.category
+		this.props.category.fetchSubCategory(selectedCategory.key);
 	}
 
 	_onDelete = (item: any) => {
+		const { profile } = this.props.auth
 		Alert.alert(
 			'Delete',
 			'Are you sure you want to delete this Category?',
 			[
-				{ text: 'Yes', onPress: () => this.props.category.deleteSubCategory(item) },
+				{ text: 'Yes', onPress: () => this.props.category.deleteSubCategory(profile, item.key) },
 				{ text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' }
 			],
 			{ cancelable: false }
@@ -46,15 +47,16 @@ export default class SubCategoryContainer extends React.Component<AppProps, AppS
 	};
 
 	public render() {
-		const { dataSubCategory } = this.props.category;
+		const { dataSubCategory, loadingSubCategory } = this.props.category;
 		return (
 			<SubCategoryScreen
 				onEdit={this._onEdit}
 				dataSubCategory={dataSubCategory}
-				category={this.state.category}
 				navigation={this.props.navigation}
 				onDelete={this._onDelete}
+				loading={loadingSubCategory}
 			/>
+
 		);
 	}
 }

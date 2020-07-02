@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, TextInput, Text, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet, TextInput, Text, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import { OutlinedTextField } from 'react-native-material-textfield';
 import ArrowBackHeader from '../../../../components/ArrowBackHeader';
 import modules from '../../../../modules';
@@ -7,6 +7,7 @@ import _styles from '../../../../_styles';
 import FastImage from 'react-native-fast-image';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Header from '../../../../components/Header';
 
 export interface AppProps {
 	navigation: any;
@@ -34,14 +35,14 @@ export default class AddBannerScreen extends React.Component<AppProps, any> {
 	public render() {
 		return (
 			<View>
-				<ArrowBackHeader
-					onGoBack={() => this.props.navigation.goBack()}
-					color={modules.WHITE}
-					process={this.props.loading}
-					arrowIcon="x-circle"
+				<SafeAreaView style={{ backgroundColor: modules.PRIMARY }} />
+				<Header
 					title="Add Banner"
-					rightText="save"
-					onRight={() => this.props.onSave()}
+					loading={this.props.loading}
+					onBack={() => this.props.navigation.goBack()}
+					onEdit={true}
+					isEdit={true}
+					onSave={this.props.onSave}
 				/>
 				<View style={styles.formGroups}>
 					<OutlinedTextField
@@ -76,13 +77,13 @@ export default class AddBannerScreen extends React.Component<AppProps, any> {
 								/>
 							</TouchableOpacity>
 						) : (
-							<TouchableOpacity
-								style={styles.imageContainer}
-								onPress={() => this.setState({ modal: !this.state.modal })}
-							>
-								<Image style={styles.image} source={require('./../../../../../assets/download.png')} />
-							</TouchableOpacity>
-						)}
+								<TouchableOpacity
+									style={styles.imageContainer}
+									onPress={() => this.setState({ modal: !this.state.modal })}
+								>
+									<Image style={styles.image} source={require('./../../../../../assets/download.png')} />
+								</TouchableOpacity>
+							)}
 					</View>
 				</View>
 
@@ -91,7 +92,7 @@ export default class AddBannerScreen extends React.Component<AppProps, any> {
 					style={styles.modal}
 					isVisible={this.state.modal}
 				>
-					<View style={[ _styles.rows, styles.containerModal ]}>
+					<View style={[_styles.rows, styles.containerModal]}>
 						<TouchableOpacity
 							onPress={async () => {
 								this.setState({ modal: !this.state.modal });
@@ -145,8 +146,7 @@ const styles = StyleSheet.create({
 		width: modules.VIEW_PORT_WIDTH - modules.BODY_HORIZONTAL * 2,
 		height: modules.VIEW_PORT_WIDTH / 2,
 		marginHorizontal: modules.BODY_HORIZONTAL,
-
-		borderRadius: modules.RADIUS,
+		borderRadius: modules.RADIUS / 2,
 		overflow: 'hidden'
 	},
 	selectImageText: {

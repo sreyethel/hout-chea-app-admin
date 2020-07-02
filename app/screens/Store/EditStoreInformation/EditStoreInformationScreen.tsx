@@ -120,18 +120,7 @@ export default class EditStoreInformationScreen extends React.Component<AppProps
 							/>
 						</View>
 					</View>
-					{/* 
-					<View style={styles.nameContainer}>
-						<View style={styles.textFieldWrapper}>
-							<Text style={styles.textLabel}>Email</Text>
-							<TextInput
-								onChangeText={(text) => this.setState({ email: text })}
-								value={this.state.email}
-								style={styles.input}
-								placeholder="Email"
-							/>
-						</View>
-					</View> */}
+
 				</View>
 
 				<TouchableOpacity
@@ -153,7 +142,7 @@ export default class EditStoreInformationScreen extends React.Component<AppProps
 		return (
 			<View style={_styles.flx1}>
 				<SafeAreaView />
-				{this._renderEditProfile()}
+				{/* {this._renderEditProfile()} */}
 				{this._renderBody()}
 				<Modal
 					onBackdropPress={() => this.setState({ modal: !this.state.modal })}

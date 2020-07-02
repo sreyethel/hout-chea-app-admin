@@ -2,7 +2,6 @@ import * as React from 'react';
 import { View, StyleSheet, Text,ScrollView } from 'react-native';
 import Header from '../../../components/Header';
 import _styles from '../../../_styles';
-// import { ScrollView } from 'react-native-gesture-handler';
 import OrderCard from '../../../components/OrderCard';
 import moment from 'moment';
 

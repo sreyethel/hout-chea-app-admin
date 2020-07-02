@@ -1,11 +1,15 @@
+import React from 'react';
+import MODULE from '../modules'
+import { TouchableOpacity, StyleSheet } from 'react-native';
+import _styles from '../_styles';
+import modules from '../modules';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import HomeContainer from '../screens/Home/HomeContainer';
 import LoginContainer from '../screens/Login/LoginContainer';
 import LoginPhoneContainer from '../screens/Login/LoginPhone/LoginPhoneContainer';
-
 import ConfirmCodeContainer from '../screens/Login/ConfirmCode/ConfirmCodeContainer';
 import WelcomeContainer from '../container/WelcomeContainer';
-
 import SignUpContainer from '../screens/SignUp/SignUpContainer';
 import RegisterStoreContainer from '../screens/RegisterStore/RegisterStoreContainer';
 import CountryContainer from '../container/CountryContainer';
@@ -21,7 +25,7 @@ import EditUserInformationContainer from '../screens/Profile/EditUserInformation
 import EditStoreInformationContainer from '../screens/Store/EditStoreInformation/EditStoreInformationContainer';
 import OrderDetailContainer from '../screens/Orders/orderDetail/OrderDetailContainer';
 import OrderByStatusContainer from '../screens/Orders/orderByStatus/OrderByStatusContainer';
-import { createStackNavigator } from 'react-navigation-stack';
+import { createStackNavigator, NavigationStackScreenProps } from 'react-navigation-stack';
 import ProductContainer from '../screens/Products/ProductContainer';
 import AddProductContainer from '../screens/Products/AddProduct/AddProductContainer';
 import AddProductColorDetailContainer from '../screens/Products/ProductDetail/AddProductColorDetail/AddProductColorDetailContainer';
@@ -50,6 +54,10 @@ import EditLocationContainer from '../screens/Home/Location/EditLocation/EditLoc
 import SelectMapScreen from '../screens/Home/Location/SelectMap/SelectMapScreen';
 import FeedBackContainer from '../screens/Feedback/FeedBackContainer';
 import RegisterUserContainer from '../screens/Profile/ResgisterUser/RegisterUserContainer';
+import StockContainer from '../screens/Products/Stock/StockContainer';
+import SelectUnitMeasurementContainer from '../screens/Products/SelectUnitMeasurement/SelectUnitMeasurementContainer';
+import NotiContainer from '../screens/Noti/NotiContainer';
+import SelectProductContainer from '../screens/Products/SelectProduct/SelectProductContainer';
 
 const AUTH_STACK = createStackNavigator(
 	{
@@ -64,8 +72,8 @@ const AUTH_STACK = createStackNavigator(
 		REGISTER_MAP: RegisterMapContainer
 	},
 	{
-		headerMode: 'none',
-		mode: 'modal'
+		mode: 'modal',
+		headerMode:'none'
 	}
 );
 
@@ -76,114 +84,673 @@ const STORE_STACK = createStackNavigator(
 		SELECT_DEPARTMENT: SelectDepartmentContainer
 	},
 	{
-		headerMode: 'none',
 		mode: 'modal'
 	}
 );
 
-// const APP = createBottomTabNavigator(
-// 	{
-// 		Home: HomeContainer,
-// 		Product: ProductContainer,
-// 		Order: OrderContainer,
-// 		Profile: ProfileContainer
-// 	},
-// 	{
-// 		lazy: true,
-// 		defaultNavigationOptions: ({ navigation }) => ({
-// 			tabBarIcon: ({ focused, horizontal, tintColor }) => {
-// 				const { routeName } = navigation.state;
-// 				let iconName;
-// 				if (routeName === 'Home') {
-// 					iconName = `store-alt`;
-// 				} else if (routeName === 'Product') {
-// 					iconName = `boxes`;
-// 				} else if (routeName === 'Order') {
-// 					iconName = `cart-plus`;
-// 				} else if (routeName === 'Delivery') {
-// 					iconName = `truck`;
-// 				} else if (routeName === 'Profile') {
-// 					iconName = `user-alt`;
-// 				}
-// 				return <Icon name={`${iconName}`} size={21} color={`${tintColor}`} />;
-// 			}
-// 		}),
-// 		tabBarOptions: {
-// 			showLabel: true,
-// 			activeTintColor: MODULE.COLOR_MAIN,
-// 			inactiveTintColor: '#a1a1a1',
-// 			style: {
-// 				paddingTop: 8,
-// 				borderTopWidth: 1,
-// 				borderTopColor: MODULE.BORDER_COLOR
-// 			},
-// 			labelStyle: {
-// 				fontSize: 10
-// 			}
-// 		}
-// 	}
-// );
+
 
 const APP_STACK = createStackNavigator(
 	{
-		// APP_HOME: APP,
-		Home: HomeContainer,
-		Product: ProductContainer,
-		Order: OrderContainer,
-		Profile: ProfileContainer,
+		Home: {
+			screen: HomeContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps) => ({
+				headerTitle: '',
+				headerShown: false,
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+			})
+		},
+		Product: {
+			screen: ProductContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: `Product`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+				headerRight: () => {
+					return (
+						<TouchableOpacity onPress={() => navigation.navigate("ADD_PRODUCT")} style={styles.chip}>
+							<Icon name="add-box" size={28} color="#fff" />
+						</TouchableOpacity>
+					)
+				}
+			})
 
-		////Category
-		Category: CategoryContainer,
-		AddCategory: AddCategoryContainer,
-		SubCategory: SubCategoryContainer,
-		AddSubCategory: AddSubCategoryContainer,
-		EditCategory: EditCategoryContainer,
-		EditSubCategory: EditSubCategoryContainer,
+		},
+		Order: {
+			screen: OrderContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: `Order`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
 
-		//Banner
-		Banner: BannerContainer,
-		AddBanner: AddBannerContainer,
-		EditBanner: EditBannerContainer,
+			})
+		},
+		Profile: {
+			screen: ProfileContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: `Account`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+			})
+		},
+
+		Category: {
+			screen: CategoryContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: `Category`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+				headerRight: () => {
+					return (
+						<TouchableOpacity onPress={() => navigation.navigate("AddCategory")} style={styles.chip}>
+							<Icon name="add-box" size={28} color="#fff" />
+						</TouchableOpacity>
+					)
+				}
+
+
+			})
+
+		},
+		AddCategory: {
+			screen: AddCategoryContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: false,
+				headerTitle: `Add Category`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
+		SubCategory: {
+			screen: SubCategoryContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: `${navigation.state.params ? navigation.state.params.title : ''}`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+				headerRight: () => {
+					return (
+						<TouchableOpacity onPress={() => navigation.navigate("AddSubCategory")} style={styles.chip}>
+							<Icon name="add-box" size={28} color="#fff" />
+						</TouchableOpacity>
+					)
+				}
+
+
+			})
+
+		},
+		AddSubCategory: {
+			screen: AddSubCategoryContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: false,
+				headerTitle: `Add SubCategory`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
+
+		EditCategory: {
+			screen: EditCategoryContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: false,
+				headerTitle: `Edit Category`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
+		EditSubCategory:
+		{
+			screen: EditSubCategoryContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: false,
+				headerTitle: `Edit Category`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
+
+		Banner: {
+			screen: BannerContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: `Banner`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+				headerRight: () => {
+					return (
+						<TouchableOpacity onPress={() => navigation.navigate("AddBanner")} style={styles.chip}>
+							<Icon name="add-box" size={28} color="#fff" />
+						</TouchableOpacity>
+					)
+				}
+
+
+			})
+		},
+		AddBanner: {
+			screen: AddBannerContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: false,
+				headerTitle: `Edit Category`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
+		EditBanner: {
+			screen: EditBannerContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: false,
+				headerTitle: `Edit Banner`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
 
 		//Promotion
-		Promotion: PromotionContainer,
-		AddPromotion: AddPromotionContainer,
-		EditPromotion: EditPromotionContainer,
+		Promotion: {
+			screen: PromotionContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: `Promotion`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+				headerRight: () => {
+					return (
+						<TouchableOpacity onPress={() => navigation.navigate("AddPromotion")} style={styles.chip}>
+							<Icon name="add-box" size={28} color="#fff" />
+						</TouchableOpacity>
+					)
+				}
+
+
+			})
+		},
+		AddPromotion: {
+			screen: AddPromotionContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: false,
+				headerTitle: `Add Promotion`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
+		EditPromotion: {
+			screen: EditPromotionContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: false,
+				headerTitle: `Edit Promotion`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
 
 		//Poster
-		Poster: PosterContainer,
-		AddPoster: AddPosterContainer,
-		EditPoster: EditPosterContainer,
+		Poster: {
+			screen: PosterContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: `Poster`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+				headerRight: () => {
+					return (
+						<TouchableOpacity onPress={() => navigation.navigate("AddPoster")} style={styles.chip}>
+							<Icon name="add-box" size={28} color="#fff" />
+						</TouchableOpacity>
+					)
+				}
+
+			})
+		},
+		AddPoster: {
+			screen: AddPosterContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: false,
+				headerTitle: `Add Location`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
+		EditPoster: {
+			screen: EditPosterContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: false,
+				headerTitle: `Add Location`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
 
 		//Location
-		Location: LocationContainer,
-		AddLocation: AddLocationContainer,
-		EditLocation: EditLocationContainer,
-		SelectMap: SelectMapScreen,
+		Location: {
+			screen: LocationContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: `Branch Location`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+				headerRight: () => {
+					return (
+						<TouchableOpacity onPress={() => navigation.navigate("AddLocation")} style={styles.chip}>
+							<Icon name="add-box" size={28} color="#fff" />
+						</TouchableOpacity>
+					)
+				}
+
+			})
+		},
+		AddLocation: {
+			screen: AddLocationContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: false,
+				headerTitle: `Add Location`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
+		EditLocation: {
+			screen: EditLocationContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: false,
+				headerTitle: `Edit Location`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
+		SelectMap: {
+			screen: SelectMapScreen,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: false,
+				headerTitle: `Edit Location`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
+		Noti: {
+			screen: NotiContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: `Notification`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
 
 		/////product
 		PRODUCT: ProductContainer,
-		ADD_PRODUCT: AddProductContainer,
+		ADD_PRODUCT: {
+			screen: AddProductContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: false,
+				headerTitle: `Edit Category`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+
+		},
 		AddProductColorDetail: AddProductColorDetailContainer,
 		AddProductDetail: AddProductDetailContainer,
-		SelectProductDetail: SelectProductDetailContainer,
-		AddProductGallery: AddGalleryContainer,
-		EDIT_PRODUCT: EditProductContainer,
+		Stock: {
+			screen: StockContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: false,
+				headerTitle: `Stock`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
+		SelectProduct:{
+			screen:SelectProductContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: `Select Product`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
+		SelectProductDetail: {
+			screen: SelectProductDetailContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: `Choose SubCategory`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
+		SelectUnitMeasurement: {
+			screen: SelectUnitMeasurementContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: `Select UnitMeasurement`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
+		AddProductGallery: {
+			screen:AddGalleryContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: `Add Gallery`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
+		EDIT_PRODUCT: {
+			screen: EditProductContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: false,
+				headerTitle: `Edit Product`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
 
 		///FeedBack
-		FeedBack: FeedBackContainer,
+		FeedBack: {
+			screen: FeedBackContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: `Feed Back`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
 
 		///RegisterUser
 		RegisterUser: RegisterUserContainer,
+		EDIT_USER: {
+			screen: EditUserInformationContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: ``,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
 
-		//////
-		EDIT_USER: EditUserInformationContainer,
-		EDIT_STORE: EditStoreInformationContainer,
-		ORDER_DETAIL: OrderDetailContainer,
+
+			})
+		},
+		EDIT_STORE: {
+			screen: EditStoreInformationContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: ``,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
+		ORDER_DETAIL: {
+			screen:OrderDetailContainer,
+			navigationOptions: ({ navigation }: NavigationStackScreenProps, ) => ({
+				headerTintColor: MODULE.WHITE,
+				headerShown: true,
+				headerTitle: `ORDER DETAIL`,
+				headerBackTitle: 'Back',
+				headerBackTitleStyle: {
+					color: MODULE.WHITE
+				},
+				headerStyle: {
+					backgroundColor: MODULE.PRIMARY,
+				},
+
+
+			})
+		},
 		ORDER_BY_STATUS: OrderByStatusContainer
 	},
 	{
-		headerMode: 'none'
+		// headerMode: 'none'
 	}
 );
 
@@ -195,3 +762,27 @@ const MainApp = createSwitchNavigator({
 });
 
 export default createAppContainer(MainApp);
+const styles = StyleSheet.create({
+
+	chip: {
+		paddingHorizontal: 12,
+		paddingVertical: 8,
+		borderRadius: 25,
+		alignItems: 'center',
+		marginLeft: 12,
+		..._styles.rows,
+		borderWidth: 1,
+		borderColor: modules.COLOR_MAIN
+	},
+	header: {
+		justifyContent: 'space-between',
+		backgroundColor: modules.WHITE,
+		paddingBottom: 8
+	},
+	search: {
+		flex: 1,
+		padding: 8,
+		backgroundColor: '#f7f9fa',
+		borderRadius: 10
+	},
+});

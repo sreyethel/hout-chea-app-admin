@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, StatusBar } from 'react-native';
 import AddGalleryScreen from '../../Products/AddGallery/AddGalleryScreen';
 import AddCategoryScreen from './AddSubCategoryScreen';
 import { NavigationStackScreenProps } from 'react-navigation-stack';
@@ -8,7 +8,7 @@ import modules from '../../../modules';
 import { inject, observer } from 'mobx-react';
 import { ICategory, ISubCategory } from '../../../interface/category.interface';
 import { createId } from '../../../services/data.service';
-import { pageKey } from '../../../services/mapping.service';
+import { pageKey, StatusObject } from '../../../services/mapping.service';
 
 interface AppProps extends NavigationStackScreenProps {
 	category: any;
@@ -59,7 +59,7 @@ export default class AddSubCategoryContainer extends React.Component<AppProps, S
 		this.setState({ loading: true });
 		const { profile } = this.props.auth;
 		const { name, description, path } = this.state;
-		const category = this.props.navigation.getParam('item');
+		const category = this.props.category.selectedCategory;
 		const key: string = createId();
 		let item: ISubCategory = {
 			key: key,
@@ -70,7 +70,7 @@ export default class AddSubCategoryContainer extends React.Component<AppProps, S
 			name: name,
 			description: description,
 			fileUrl: '',
-			status: null,
+			status: StatusObject().ACTIVE,
 			category: category,
 			categoryKey: category.key
 		};

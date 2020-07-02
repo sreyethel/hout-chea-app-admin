@@ -1,5 +1,5 @@
 export default {
-	LOGO: require('./assets/logo.png'),
+	LOGO: require('./assets/icon.jpg'),
 	NEWLOGO: require('./assets/newlogo-no.png'),
 	FLAG: require('./assets/KHFlag-icon.png'),
 	PRODUCT: require('./assets/pack.png'),

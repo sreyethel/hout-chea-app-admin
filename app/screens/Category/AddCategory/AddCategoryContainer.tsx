@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, Alert } from 'react-native';
 import AddGalleryScreen from '../../Products/AddGallery/AddGalleryScreen';
 import AddCategoryScreen from './AddCategoryScreen';
 import { NavigationStackScreenProps } from 'react-navigation-stack';
@@ -9,6 +9,7 @@ import { inject, observer } from 'mobx-react';
 import { ICategory } from '../../../interface/category.interface';
 import { createId } from '../../../services/data.service';
 import { pageKey } from '../../../services/mapping.service';
+import { Status } from '../../../dummy/status';
 
 interface AppProps extends NavigationStackScreenProps {
 	category: any;
@@ -20,6 +21,7 @@ interface State {
 	description: string;
 	path: string;
 	loading: boolean;
+	market: any
 }
 
 @inject('category', 'auth')
@@ -31,10 +33,16 @@ export default class AddCategoryContainer extends React.Component<AppProps, Stat
 			name: '',
 			description: '',
 			path: '',
-			loading: false
+			loading: false,
+			market: null
 		};
 	}
-
+	componentDidMount() {
+		const { dataMarket } = this.props.category;
+		this.setState({
+			market: dataMarket[1]
+		})
+	}
 	_onSelectImage = () => {
 		ImagePicker.openPicker({
 			width: modules.VIEW_PORT_WIDTH,
@@ -56,9 +64,23 @@ export default class AddCategoryContainer extends React.Component<AppProps, Stat
 	};
 
 	_onAddCategory = async () => {
+		const { userCanActive } = this.props.auth
+		const { name, description, path } = this.state;
+		if (!name) {
+			Alert.alert("Invalid category name!")
+			return
+		}
+		if (!path) {
+			Alert.alert("Invalid image!")
+			return
+		}
+		if (!userCanActive) {
+			Alert.alert("Category add failed!")
+			return
+		}
 		await this.setState({ loading: true });
 		const { profile } = this.props.auth;
-		const { name, description, path } = this.state;
+		
 		const key: string = createId();
 		let item: ICategory = {
 			key: key,
@@ -69,10 +91,9 @@ export default class AddCategoryContainer extends React.Component<AppProps, Stat
 			name: name,
 			description: description,
 			fileUrl: '',
-			status: null
+			status: Status[0],
+			market: this.state.market
 		};
-
-		console.log('item', item);
 		await this.props.category.uploadPhoto(path, (res: any) => {
 			if (res) {
 				item.fileUrl = res;
@@ -88,8 +109,10 @@ export default class AddCategoryContainer extends React.Component<AppProps, Stat
 	public render() {
 		const { name, description, path } = this.state;
 		const { loading } = this.state;
+		const { dataMarket } = this.props.category;
 		return (
 			<AddCategoryScreen
+				dataMarket={dataMarket}
 				loading={loading}
 				onPresCamera={this._onSelectCamera}
 				onPresImage={this._onSelectImage}
@@ -100,6 +123,7 @@ export default class AddCategoryContainer extends React.Component<AppProps, Stat
 				description={description}
 				onChangeName={(val) => this.setState({ name: val })}
 				onChangeDescription={(val) => this.setState({ description: val })}
+				onSelectedMarket={(val) => this.setState({ market: val })}
 			/>
 		);
 	}

@@ -30,13 +30,13 @@ export default class SelectProductDetailContainer extends React.Component<Props,
 		};
 	}
 
-	componentDidMount() {
-
-		this.props.category.fetchSubCategory('', (data: any) => {
-			if (data) {
-				this.setState({ data, items: data, loading: false });
-			}
-		});
+	async	componentDidMount() {
+	
+		 this.props.category.fetchSubCategory('', (data: any) => {
+        if (data) {
+            this.setState({ data, items: data, loading: false });
+        }
+    });
 
 	}
 

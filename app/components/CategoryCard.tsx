@@ -8,41 +8,39 @@ import modules from './../modules';
 import { fontGSans } from '../../functions/customFont';
 
 export interface AppProps {
-	title: string;
-	fileUrl: string;
-	price: any;
-	shipping: any;
-	qty?: number;
-	bgColor: Array<any>;
-	desc: string;
-	ClickTrash?: any;
 	click?: any;
 	clickMore?: any;
+	data?: any
 }
 
-export default ({ title, click, fileUrl, clickMore }: AppProps) => {
+export default ({ data, click, clickMore }: AppProps) => {
 	return (
 		<TouchableOpacity onPress={click} style={styles.container}>
 			<View style={_styles.center}>
-				{fileUrl ? (
+				{data.fileUrl ? (
 					<View style={styles.imgContainer}>
-						<FastImage style={styles.img} source={{ uri: fileUrl }} />
+						<FastImage style={styles.img} source={{ uri: data.fileUrl }} />
 					</View>
 				) : (
-					<View style={styles.imgContainer}>
-						<Image style={styles.img} source={require('./../../assets/product-placeholder.jpg')} />
-					</View>
-				)}
+						<View style={styles.imgContainer}>
+							<Image style={styles.img} source={require('./../../assets/product-placeholder.jpg')} />
+						</View>
+					)}
 			</View>
-			<View style={styles.textContainer}>
-				<View style={styles.titleContainer}>
+			<View style={[styles.textContainer,]}>
+				<View style={{ flex: 1 }}>
 					<Text style={styles.title} numberOfLines={2}>
-						{title}
+						{data?.name}
 					</Text>
-					<TouchableOpacity onPress={clickMore}>
-						<Icon style={styles.iconClose} name="more-horizontal" />
-					</TouchableOpacity>
+					<Text style={styles.subtitle} numberOfLines={2}>
+						Note: {data.description}
+					</Text>
+					<View style={{ flex: 1 }} />
+
 				</View>
+				<TouchableOpacity onPress={clickMore}>
+					<Icon style={styles.iconClose} name="more-horizontal" />
+				</TouchableOpacity>
 			</View>
 		</TouchableOpacity>
 	);
@@ -65,7 +63,7 @@ const styles = StyleSheet.create({
 	imgContainer: {
 		width: (MODULE.VIEW_PORT_WIDTH - MODULE.BODY_HORIZONTAL * 7) / 4,
 		height: (MODULE.VIEW_PORT_WIDTH - MODULE.BODY_HORIZONTAL * 7) / 4,
-		borderRadius: MODULE.RADIUS,
+		borderRadius: MODULE.RADIUS / 2,
 		overflow: 'hidden'
 	},
 	text: {
@@ -78,16 +76,23 @@ const styles = StyleSheet.create({
 	},
 	textContainer: {
 		flex: 1,
-		justifyContent: 'center',
-		alignItems:'center'
+		flexDirection: 'row',
+		// justifyContent: 'center',
+		// alignItems:'center'
 	},
 	title: {
-		fontSize: MODULE.FONT_H5,
-		color: MODULE.SUB_TEXT,
+		fontSize: MODULE.FONT_H5 - 1,
+		color: MODULE.TEXT,
 		fontWeight: '400',
 		paddingBottom: MODULE.SPACE,
 		width: '80%',
-		marginTop: MODULE.BODY_HORIZONTAL,
+		...fontGSans,
+		marginLeft: MODULE.BODY_HORIZONTAL
+	},
+	subtitle: {
+		color: MODULE.SUB_TEXT,
+		width: '80%',
+		fontSize: 13,
 		...fontGSans,
 		marginLeft: MODULE.BODY_HORIZONTAL
 	},

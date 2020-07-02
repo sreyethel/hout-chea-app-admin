@@ -2,9 +2,14 @@ import { StyleSheet } from 'react-native';
 import modules from '../modules';
 
 export default StyleSheet.create({
+	noData: {
+		textAlign: 'center',
+		margin: 12,
+		color: modules.SUB_TEXT
+	},
 	center: {
 		flexDirection: 'row',
-		alignItems: 'center'
+
 	},
 	formGroups: {
 		backgroundColor: modules.WHITE,

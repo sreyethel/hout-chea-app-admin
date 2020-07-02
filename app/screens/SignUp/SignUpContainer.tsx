@@ -23,13 +23,7 @@ export default class SignUpContainer extends React.Component<Props, State> {
 			disabled: true
 		};
 	}
-	componentDidMount() {
-		StatusBar.setBarStyle('dark-content');
-	}
 
-	componentWillUnmount() {
-		StatusBar.setBarStyle('light-content');
-	}
 
 	onContinue = () => {
 		const { name } = this.state;

@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, FlatList } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text, FlatList, ActivityIndicator } from 'react-native';
 import Header from '../../components/Header';
 import Icon from 'react-native-vector-icons/Feather';
 import modules from './../../modules';
@@ -8,103 +8,101 @@ import CategoryCard from '../../components/CategoryCard';
 import Modal from 'react-native-modal';
 import { fontGSans } from '../../../functions/customFont';
 
-export interface AppProps {
+interface Props {
 	navigation: any;
-	category: any;
+	loading:boolean
 	dataSubCategory: any;
 	onDelete: (item: any) => void;
 	onEdit: (item: any) => void;
 }
 
-export default class SubCategoryScreen extends React.Component<AppProps, any> {
-	constructor(props: AppProps) {
-		super(props);
-		this.state = {
-			modal: false,
-			item: null
-		};
-	}
 
-	componentDidMount() {}
-
-	_onShowModal = (item?: any) => {
-		this.setState({ modal: !this.state.modal });
-		item ? this.setState({ item: item }) : null;
-	};
-
-	public render() {
-		const { category } = this.props;
-		return (
-			<View style={[ _styles.flx1, _styles.background ]}>
-				<Header goBack={() => this.props.navigation.goBack()} title={category.name} />
-				<TouchableOpacity
-					onPress={() => this.props.navigation.navigate('AddSubCategory', { item: category })}
-					style={styles.chip}
-				>
-					<Icon name="plus" size={modules.FONT_H3} color="#fff" />
-				</TouchableOpacity>
+const _onShowModal = (item: string, modal: boolean, setmodal: any, setItem: any) => {
+	setItem(item)
+	setmodal(!modal)
+};
+export default ({
+	navigation,
+	onDelete,
+	onEdit,
+	dataSubCategory,
+	loading
+}: Props) => {
+	const [modal, setmodal] = useState(false)
+	const [Item, setItem] = useState(null)
+	return (
+		<View style={[_styles.flx1, _styles.background]}>
+			{
+				loading?<ActivityIndicator/>
+				:
 				<FlatList
-					ListFooterComponent={() => {
-						return <View style={{ marginBottom: modules.VIEW_PORT_HEIGHT / 4 }} />;
-					}}
-					data={this.props.dataSubCategory.slice()}
-					renderItem={({ item }: any) => {
-						return (
-							<CategoryCard
-								click={() => this.props.navigation.navigate('SubCategory', { item: item })}
-								clickMore={() => this._onShowModal(item)}
-								desc={item.description}
-								bgColor={item.color}
-								shipping={item.code}
-								fileUrl={item.fileUrl}
-								title={item.name}
-								price={item.price}
-							/>
-						);
-					}}
-				/>
-				<Modal
-					backdropTransitionOutTiming={0}
-					onBackdropPress={() => this._onShowModal()}
-					useNativeDriver={true}
-					style={styles.modal}
-					isVisible={this.state.modal}
-				>
-					<View style={styles.modalBox}>
-						<View style={_styles.row}>
-							<TouchableOpacity
-								onPress={() => {
-									this._onShowModal();
-									setTimeout(() => {
-										this.props.onEdit(this.state.item);
-									}, 500);
-								}}
-								style={styles.buttonEdit}
-							>
-								<Icon style={styles.icon} color={modules.SECONDARY} name="edit" />
-								<Text style={styles.label}>Edit</Text>
-							</TouchableOpacity>
-							<TouchableOpacity
-								onPress={() => {
-									this._onShowModal;
-									setTimeout(() => {
-										this.props.onDelete(this.state.item);
-									}, 500);
-								}}
-								style={styles.buttonEdit}
-							>
-								<Icon style={styles.icon} color={modules.COLOR_MAIN} name="trash" />
-								<Text style={styles.label}>Delete</Text>
-							</TouchableOpacity>
-						</View>
+				ListFooterComponent={() => {
+					return <View style={{ marginBottom: modules.VIEW_PORT_HEIGHT / 4 }}>
+						{
+							dataSubCategory.length > 0 ? null
+								: <Text style={styles.noData}>No Data</Text>
+						}
+					</View>;
+				}}
+				data={dataSubCategory.slice()}
+				renderItem={({ item }: any) => {
+					return (
+						<CategoryCard
+							click={() => navigation.navigate('SubCategory', { item: item })}
+							clickMore={() => _onShowModal(item, modal, setmodal, setItem)}
+							data={item}
+						/>
+					);
+				}}
+			/>
+			}
+			
+			<Modal
+				backdropTransitionOutTiming={0}
+				onBackdropPress={() => setmodal(!modal)}
+				useNativeDriver={true}
+				style={styles.modal}
+				isVisible={modal}
+			>
+				<View style={styles.modalBox}>
+					<View style={_styles.row}>
+						<TouchableOpacity
+							onPress={() => {
+								setmodal(!modal);
+								setTimeout(() => {
+									onEdit(Item);
+								}, 500);
+							}}
+							style={styles.buttonEdit}
+						>
+							<Icon style={styles.icon} color={modules.SECONDARY} name="edit" />
+							<Text style={styles.label}>Edit</Text>
+						</TouchableOpacity>
+						<TouchableOpacity
+							onPress={() => {
+								setmodal(!modal);
+								setTimeout(() => {
+									onDelete(Item);
+								}, 500);
+							}}
+							style={styles.buttonEdit}
+						>
+							<Icon style={styles.icon} color={modules.COLOR_MAIN} name="trash" />
+							<Text style={styles.label}>Delete</Text>
+						</TouchableOpacity>
 					</View>
-				</Modal>
-			</View>
-		);
-	}
+				</View>
+			</Modal>
+		</View>
+	);
 }
 
 const styles = StyleSheet.create({
+	noData: {
+		textAlign: 'center',
+		margin: 12,
+		color: modules.SUB_TEXT
+	},
 	icon: {
 		fontSize: modules.FONT_H1
 	},

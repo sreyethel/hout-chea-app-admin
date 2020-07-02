@@ -1,110 +1,188 @@
-import * as React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, FlatList } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import _styles from '../../_styles';
-import Header from '../../components/Header';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import modules from '../../modules';
 import CategoryCard from '../../components/CategoryCard';
 import Modal from 'react-native-modal';
 import { SafeAreaView } from 'react-navigation';
-import { fontGSans } from '../../../functions/customFont';
+import { fontGSans, fontSemiBold } from '../../../functions/customFont';
+import { ScrollView } from 'react-native-gesture-handler';
+import RnProductRecentPost from '../../components/RnProductRecentPost';
 
-export interface AppProps {
+interface Props {
 	navigation: any;
 	dataCategory: any;
+	dataMarket: any;
+
+	onSubCategory: (item: any) => void;
 	onDelete: (item: any) => void;
 	onEdit: (item: any) => void;
+	onCategoryByMarket: (item: any) => void;
+	loading: boolean;
+	loadingMarket: boolean;
 }
 
 export interface AppState {
 	modal: boolean;
 	item: any;
 }
-
-export default class CategoryScreen extends React.Component<AppProps, AppState> {
-	constructor(props: AppProps) {
-		super(props);
-		this.state = { modal: false, item: null };
-	}
-
-	_onShowModal = (item?: string) => {
-		this.setState({ modal: !this.state.modal, item: item ? item : '' });
-	};
-
-	public render() {
-		return (
-			<View style={[ _styles.flx1, _styles.background ]}>
-				<Header goBack={() => this.props.navigation.goBack()} title="Category" />
-				<TouchableOpacity onPress={() => this.props.navigation.navigate('AddCategory')} style={styles.chip}>
-					<Icon name="add" size={modules.FONT_H3} color="#fff" />
-				</TouchableOpacity>
-
-				<View style={styles.productContainer}>
-					<FlatList
-						ListFooterComponent={() => {
-							return <View style={{ marginBottom: modules.VIEW_PORT_HEIGHT / 4 }} />;
-						}}
-						data={this.props.dataCategory.slice()}
-						renderItem={({ item }: any) => {
-							return (
-								<CategoryCard
-									click={() => this.props.navigation.navigate('SubCategory', { item: item })}
-									clickMore={() => this._onShowModal(item)}
-									desc={item.description}
-									bgColor={item.color}
-									shipping={item.code}
-									fileUrl={item.fileUrl}
-									title={item.name}
-									price={item.price}
-								/>
-							);
-						}}
-					/>
+const _onShowModal = (item: string, modal: boolean, setmodal: any, setItem: any) => {
+	setItem(item)
+	setmodal(!modal)
+};
+export default ({ onSubCategory, navigation, dataCategory, dataMarket, onDelete, onEdit, loading, onCategoryByMarket, loadingMarket, }: Props) => {
+	const [modal, setmodal] = useState(false)
+	const [Item, setItem] = useState(null)
+	const [selected, setSelected] = useState(dataMarket[0])
+	const [category, setCategory] = useState([])
+	const [Index, setIndex] = useState(0)
+	return (
+		<View style={[_styles.flx1, _styles.background]}>
+			{/* <View style={{ backgroundColor: '#fff', }}>
+				<View style={styles.product}>
+					<Text style={styles.txtProfile}>Your Market</Text>
 				</View>
-
-				<Modal
-					backdropTransitionOutTiming={0}
-					onBackdropPress={() => this._onShowModal()}
-					useNativeDriver={true}
-					style={styles.modal}
-					isVisible={this.state.modal}
+				<ScrollView
+					horizontal={true}
+					showsHorizontalScrollIndicator={false}
+					style={{ paddingVertical: 12, }}
 				>
-					<View style={styles.modalBox}>
-						<View style={_styles.row}>
-							<TouchableOpacity
-								onPress={async () => {
-									await this.setState({ modal: !this.state.modal });
-									this.props.onEdit(this.state.item);
-								}}
-								style={styles.buttonEdit}
-							>
-								<Icon style={styles.icon} color={modules.SECONDARY} name="edit" />
-								<Text style={styles.label}>Edit</Text>
-							</TouchableOpacity>
+					{dataMarket ?
+						dataMarket.map((i: any, index: any) => {
+							return (
+								<RnProductRecentPost
+									key={index}
+									click={() =>
+										_onSelected(
+											i, setSelected,
+											index, setIndex,
+											category, setCategory, onCategoryByMarket
+										)
+									}
+									path={i.fileUrl}
+									iconName="car"
+									name={i.name}
+									style={Index == index ? styles.btnSelected : styles.notSelected}
 
-							<TouchableOpacity
-								onPress={async () => {
-									await this.setState({ modal: !this.state.modal });
-									setTimeout(() => {
-										this.props.onDelete(this.state.item);
-									}, 500);
-								}}
-								style={styles.buttonEdit}
-							>
-								<Icon style={styles.icon} color={modules.COLOR_MAIN} name="delete-forever" />
-								<Text style={styles.label}>Delete</Text>
-							</TouchableOpacity>
-						</View>
-					</View>
-				</Modal>
+								/>
+							)
+						})
+						: <View style={{ width: modules.VIEW_PORT_WIDTH, height: modules.VIEW_PORT_WIDTH }} />}
+				</ScrollView>
+				<View style={styles.product}>
+					<Text style={styles.txtProfile}>List Categories</Text>
+					<Icon name="list" style={styles.icon} color={modules.RED} />
+				</View>
+			</View> */}
+			<View style={styles.productContainer}>
+				{
+					loading ? <ActivityIndicator />
+						:
+						<FlatList
+							ListFooterComponent={() => {
+								return <View style={{ marginBottom: modules.VIEW_PORT_HEIGHT / 4 }} >
+									{
+										dataCategory.length > 0 ? null
+											: <Text style={styles.noData}>No Data</Text>
+									}
 
-				<SafeAreaView />
+								</View>;
+							}}
+							data={dataCategory.slice()}
+							renderItem={({ item }: any) => {
+								return (
+									<CategoryCard
+										click={() => onSubCategory(item)}
+										clickMore={() => _onShowModal(item, modal, setmodal, setItem)}
+										data={item}
+									/>
+								);
+							}}
+						/>
+				}
+
 			</View>
-		);
-	}
+
+			<Modal
+				backdropTransitionOutTiming={0}
+				onBackdropPress={() => setmodal(!modal)}
+				useNativeDriver={true}
+				style={styles.modal}
+				isVisible={modal}
+			>
+				<View style={styles.modalBox}>
+					<View style={_styles.row}>
+						<TouchableOpacity
+							onPress={async () => {
+								await setmodal(!modal);
+								onEdit(Item);
+							}}
+							style={styles.buttonEdit}
+						>
+							<Icon style={styles.icon} color={modules.SECONDARY} name="edit" />
+							<Text style={styles.label}>Edit</Text>
+						</TouchableOpacity>
+
+						<TouchableOpacity
+							onPress={async () => {
+								await setmodal(!modal);
+								setTimeout(() => {
+									onDelete(Item);
+								}, 500);
+							}}
+							style={styles.buttonEdit}
+						>
+							<Icon style={styles.icon} color={modules.COLOR_MAIN} name="delete-forever" />
+							<Text style={styles.label}>Delete</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+			</Modal>
+			<SafeAreaView />
+		</View>
+	);
 }
+const _onSelected = (
+	selected: any,
+	setSelected: any,
+	index: any,
+	setIndex: any,
+	category: any,
+	setCategory: any,
+	onProbyCate: any
+) => {
+	setSelected(selected);
+	setIndex(index);
+	setCategory(category);
+	onProbyCate(selected.key)
+};
 
 const styles = StyleSheet.create({
+	noData: {
+		textAlign: 'center',
+		margin: 12,
+		color: modules.SUB_TEXT
+	},
+	btnSelected: {
+		backgroundColor: modules.PRIMARY,
+		color: modules.WHITE
+	},
+	notSelected: {
+		backgroundColor: modules.WHITE,
+
+	},
+	product: {
+		justifyContent: 'space-between',
+		padding: 12,
+		backgroundColor: '#fff',
+		..._styles.rows
+	},
+	txtProfile: {
+		fontSize: 16,
+		...fontSemiBold,
+		color: '#2b2b2b'
+	},
 	icon: {
 		fontSize: modules.FONT_H1
 	},

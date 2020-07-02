@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import { createId } from '../../../../services/data.service';
 import { IBanner } from '../../../../interface/ads.interface';
 import EditPosterScreen from './EditPosterScreen';
+import { StatusObject } from '../../../../services/mapping.service';
 
 interface AppProps extends NavigationStackScreenProps {
 	ads: any;
@@ -69,7 +70,7 @@ export default class EditPosterContainer extends React.Component<AppProps, State
 			name: name ? name : selectedItem.name,
 			description: description ? description : selectedItem.description,
 			fileUrl: selectedItem.fileUrl,
-			status: null,
+			status: StatusObject().ACTIVE,
 			index: index ? Number(index) : selectedItem.index
 		};
 		path

@@ -8,6 +8,9 @@ import CategoryStor from '../app/store/category.store';
 import AdsStore from '../app/store/ads.store';
 import LocationStore from '../app/store/location.store';
 import FeedBackStore from '../app/store/feedback.store';
+import TransactionStore from '../app/store/transaction.store';
+import MessagingStore from '../app/store/messaging.store';
+import EnvironmentStore from '../app/store/environment.store';
 
 export default function() {
 	return {
@@ -20,6 +23,9 @@ export default function() {
 		category: new CategoryStor(),
 		ads: new AdsStore(),
 		location:new LocationStore(),
-		feedback:new FeedBackStore()
+		feedback:new FeedBackStore(),
+		transaction: new TransactionStore(),
+		messaging: new MessagingStore(),
+		environment: new EnvironmentStore()
 	};
 }

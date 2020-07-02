@@ -2,10 +2,12 @@ import * as React from 'react';
 import { NavigationStackScreenProps } from 'react-navigation-stack';
 import ImagePicker from 'react-native-image-crop-picker';
 import { inject, observer } from 'mobx-react';
-import { createId } from '../../../../services/data.service';
+import { createId, storeAccountRef } from '../../../../services/data.service';
 import { pageKey } from '../../../../services/mapping.service';
 import { IBanner, IStoreLocation } from '../../../../interface/ads.interface';
 import AddLocationScreen from './AddLocationScreen';
+import AddLocationAdminScreen from './AddLocationAdminScreen'
+import { Alert } from 'react-native';
 
 interface AppProps extends NavigationStackScreenProps {
 	auth: any;
@@ -74,7 +76,12 @@ export default class AddLocationContainer extends React.Component<AppProps, Stat
 		await this.setState({ loading: true });
 		const { profile } = this.props.auth;
 		const { name, address } = this.state;
-
+		const { userCanActive } = this.props.auth
+		if (!userCanActive) {
+			Alert.alert("Invalid location!")
+			this.setState({ loading: false });
+			return
+		}
 		const { coords } = this.props.location;
 		const key: string = createId();
 		let item: IStoreLocation = {
@@ -98,30 +105,93 @@ export default class AddLocationContainer extends React.Component<AppProps, Stat
 	componentWillUnmount() {
 		this.props.location.clearAll();
 	}
+	_onSaveStoreLocation = async () => {
+		const { name, address } = this.state;
+		const { coords } = this.props.location;
+		const { profile } = this.props.auth
+		if (!name) {
+			Alert.alert("Invalid name!")
+			return
+		}
+		if (!address) {
+			Alert.alert("Invalid address!")
+			return
+		}
+		if (!coords) {
+			Alert.alert("Invalid location!")
+			return
+		}
+		const item = {
+			map: coords,
+			updated_by: profile,
+			updated_date: new Date(),
+			location_name: name,
+			address: address
+
+		}
+		this.setState({ loading: true })
+		await storeAccountRef().doc(profile.key).update(item).then(()=>{
+			this.setState({ loading: false })
+			Alert.alert("Successfully Updated!")
+			this.props.navigation.goBack()
+		}).catch((err)=>{
+			Alert.alert("Update failed")
+			this.setState({ loading: false })
+		})
+		
+
+
+	}
 
 	public render() {
 		const { name, address, coordinate } = this.state;
 		const { loading } = this.state;
 		const { coords } = this.props.location;
-		return (
-			<AddLocationScreen
-				defaultCoords={coordinate}
-				coords={this.props.location.toJs(coords)}
-				loading={loading}
-				onPresCamera={this._onSelectCamera}
-				onPresImage={this._onSelectImage}
-				navigation={this.props.navigation}
-				latitude={coords.latitude}
-				longitude={coords.longitude}
-				name={name}
-				onSave={this._onAddCategory}
-				address={address}
-				onChangeName={(val) => this.setState({ name: val })}
-				onChangeAddress={(val) => this.setState({ address: val })}
-				onChangeIndex={(val) => this.setState({ index: val })}
-				changeLongitute={(val) => this.setState({ longitute: val })}
-				changeLatitute={(val) => this.setState({ latitute: val })}
-			/>
-		);
+		const { userCanActive } = this.props.auth
+		if (!userCanActive) {
+			return (
+				<AddLocationScreen
+					defaultCoords={coordinate}
+					coords={this.props.location.toJs(coords)}
+					loading={loading}
+					onPresCamera={this._onSelectCamera}
+					onPresImage={this._onSelectImage}
+					navigation={this.props.navigation}
+					latitude={coords.latitude}
+					longitude={coords.longitude}
+					name={name}
+					onSave={this._onSaveStoreLocation}
+					address={address}
+					onChangeName={(val) => this.setState({ name: val })}
+					onChangeAddress={(val) => this.setState({ address: val })}
+					onChangeIndex={(val) => this.setState({ index: val })}
+					changeLongitute={(val) => this.setState({ longitute: val })}
+					changeLatitute={(val) => this.setState({ latitute: val })}
+				/>
+			);
+
+		} else {
+			return (
+				<AddLocationAdminScreen
+					defaultCoords={coordinate}
+					coords={this.props.location.toJs(coords)}
+					loading={loading}
+					onPresCamera={this._onSelectCamera}
+					onPresImage={this._onSelectImage}
+					navigation={this.props.navigation}
+					latitude={coords.latitude}
+					longitude={coords.longitude}
+					name={name}
+					onSave={this._onAddCategory}
+					address={address}
+					onChangeName={(val) => this.setState({ name: val })}
+					onChangeAddress={(val) => this.setState({ address: val })}
+					onChangeIndex={(val) => this.setState({ index: val })}
+					changeLongitute={(val) => this.setState({ longitute: val })}
+					changeLatitute={(val) => this.setState({ latitute: val })}
+				/>
+			);
+		}
+
 	}
 }

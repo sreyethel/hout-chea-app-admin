@@ -1,7 +1,7 @@
 import { observable, action } from 'mobx';
 import { authRef } from '../services/auth.service';
 import { Alert } from 'react-native';
-import { storeAccountRef, firestore } from '../services/data.service';
+import { storeAccountRef, firestore, storeRef } from '../services/data.service';
 import { pushToObject, pushToArray, userObject, pageKey } from '../services/mapping.service';
 import { storageRef } from '../services/storage.service';
 import firebase from 'react-native-firebase';
@@ -12,6 +12,8 @@ export default class AuthStore {
 	@observable process: boolean = false;
 	@observable loading: boolean = true;
 	@observable user: any = null;
+	@observable userCanActive: boolean = false;
+	@observable store: any = null;
 	@observable profile: any = null;
 	@observable confirmationResult: any = null;
 	@observable phone: string = '';
@@ -21,18 +23,19 @@ export default class AuthStore {
 	HOME_TAB: string = 'Home';
 
 	@action
-	signInWithPhoneNumber(country: string, phone: string, navigation: any) {
+	async	signInWithPhoneNumber(country: string, phone: string, navigation: any) {
 		const phoneNumber = `${country}${Number(phone)}`;
+		console.log('phoneNumber', phoneNumber)
 		this.country = country;
 		this.phone = phone;
 		this.confirmationResult = null;
 		this.process = true;
-
-		
-
-		firestore().collection('permission_user').where('phoneNumber', '==', phoneNumber).get().then((item: any) => {
+		await firestore()
+		.collection('permission_user')
+		.where('phoneNumber', '==', phoneNumber)
+		.get().then((item: any) => {
 			const docs = pushToArray(item);
-
+			console.log('docs', docs)
 			if (docs.length > 0) {
 				authRef()
 					.signInWithPhoneNumber(phoneNumber, true)
@@ -50,7 +53,10 @@ export default class AuthStore {
 				Alert.alert("You don't have permission to access this app");
 				this.process = false;
 			}
-		});
+		}).catch((err) => {
+			console.log('err', err)
+		})
+			;
 	}
 
 	@action
@@ -72,7 +78,7 @@ export default class AuthStore {
 	}
 
 	@action
-	async createAccount(name: string, email: string) {
+	async createAccount(name: string, email: string, coordinate: any, address: any) {
 		this.loading = true;
 		var PreUser: any = await firebase.auth().currentUser;
 
@@ -85,6 +91,7 @@ export default class AuthStore {
 			stores: null,
 			key: user.uid,
 			email: email,
+			badge: 0,
 			page_key: pageKey(),
 			created_by: userObject(user),
 			created_date: new Date(),
@@ -95,9 +102,10 @@ export default class AuthStore {
 			storeTypeVerified: false,
 			storeVerified: false,
 			mapVerified: false,
+			map: coordinate,
+			address: address,
 			departmentVerified: false
 		};
-		console.log('item ', item);
 		storeAccountRef().doc(item.key).set(item).then(() => {
 			this.loading = false;
 		});
@@ -119,6 +127,7 @@ export default class AuthStore {
 		this.loading = false;
 		this.selectedStore = null;
 		this.profile = null;
+		this.store = null;
 		this.user = null;
 		await authRef().signOut();
 		this.process = false;
@@ -127,8 +136,12 @@ export default class AuthStore {
 
 	@action
 	fetchUser(uid: string) {
-		storeAccountRef().doc(uid).onSnapshot((snapshot: any) => {
+		storeAccountRef().doc(uid).onSnapshot(async (snapshot: any) => {
 			const doc = pushToObject(snapshot);
+			await storeRef().get().then((doc: any) => {
+				const item = pushToArray(doc)
+				this.store = item[0]
+			})
 			this.profile = doc;
 		});
 	}
@@ -149,7 +162,14 @@ export default class AuthStore {
 					}
 					const doc: any = pushToObject(snapshot);
 					this.profile = doc;
-					callback(true);
+					if (doc) {
+						this.userCanActive = doc.isAdmin
+						await storeRef().get().then(async (doc: any) => {
+							const item = pushToArray(doc)
+							this.store = item[0];
+						})
+					}
+					callback(doc);
 				});
 			} else {
 				this.loading = false;
@@ -164,7 +184,6 @@ export default class AuthStore {
 	@action
 	async updateProfile(item: any, path: any, callback: any) {
 		this.process = true;
-
 		if (path) {
 			if (path == this.profile.photoURL) {
 				item.photoURL = this.profile.photoURL;

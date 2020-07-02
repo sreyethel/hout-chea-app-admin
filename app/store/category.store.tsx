@@ -1,64 +1,79 @@
 import { action, observable } from 'mobx';
-import { createId, categoryRef, subCategoryRef } from '../services/data.service';
-import { pushToArray, pushToObject } from '../services/mapping.service';
+import { createId, categoryRef, subCategoryRef, marketRef } from '../services/data.service';
+import { pushToArray, pushToObject, StatusObject } from '../services/mapping.service';
 import { storageRef } from '../services/storage.service';
+import { Status } from '../dummy/status';
 
 export default class CategoryStor {
 	@observable loading: boolean = true;
 	@observable process: boolean = true;
+	@observable dataMarket: Array<any> = [];
+	@observable loadingMarket: boolean = true;
 	@observable dataCategory: Array<any> = [];
+	@observable listCategory: Array<any> = [];
 	@observable dataSubCategory: Array<any> = [];
-
+	@observable loadingSubCategory: boolean = true;
 	@observable dataSelectedCategory: any = null;
+	@observable selectedCategory: any = null;
+
+
 
 	@action
-	async deleteCategory(item: any) {
+	fetchMarket() {
+		this.loadingMarket = true
+		const doc: any = {
+			key: 'All',
+			name: 'All',
+		}
+		marketRef().onSnapshot((item: any) => {
+			const data = pushToArray(item)
+			data.unshift(doc)
+			this.dataMarket = data
+			this.loadingMarket = false;
+		})
+	}
+	@action
+	async deleteCategory(user: any, key: string) {
 		this.process = true;
-		await subCategoryRef()
-			.where('category.key', '==', item.key)
-			.get()
-			.then((item) => {
-				item.forEach((docs: any) => {
-					docs.ref.delete();
-					const data: any = pushToObject(docs);
-					data.fileUrl ? this.deleteFile(data.fileUrl) : null;
-				});
-			})
-			.catch((error) => {
-				console.log('error', error);
-			});
-		await categoryRef().doc(item.key).delete().then(() => {
-			this.process = false;
-		});
-		item.fileUrl ? this.deleteFile(item.fileUrl) : null;
+		const item = {
+			status: StatusObject().DELETED,
+			deleted_by: user,
+			deleted_date: new Date(),
+		}
+		await categoryRef().doc(key).update(item)
+		this.process = false;
+
 	}
 
 	@action
 	deleteFile(url: any) {
+
 		storageRef()
 			.refFromURL(url)
 			.delete()
 			.then(() => {
-				console.log('delete file success');
 			})
 			.catch((error) => {
-				console.log('error', error);
 			});
 	}
 
 	@action
-	async deleteSubCategory(item: any) {
+	async deleteSubCategory(user: any, key: any) {
 		this.process = true;
+		const item = {
+			status: StatusObject().DELETED,
+			deleted_by: user,
+			deleted_date: new Date(),
+		}
 		await subCategoryRef()
-			.doc(item.key)
-			.delete()
+			.doc(key)
+			.update(item)
 			.then(() => {
 				this.process = false;
 			})
 			.catch((error) => {
-				console.log('error', error);
+				this.process = false;
 			});
-		item.fileUrl ? this.deleteFile(item.fileUrl) : null;
 	}
 
 	@action
@@ -83,18 +98,38 @@ export default class CategoryStor {
 				this.process = false;
 			})
 			.catch((e: any) => {
-				// console.log('e', e)
 				callback(null);
 			});
 	}
 
 	@action
-	fetchCategory() {
+	fetchCategory(key?: string) {
 		this.loading = true;
-		categoryRef().onSnapshot((item: any) => {
-			this.dataCategory = pushToArray(item);
-			this.loading = false;
-		});
+		if (key) {
+			categoryRef()
+				.where("status.key", "==", 1)
+				.onSnapshot((item: any) => {
+					const doc = pushToArray(item);
+					this.dataCategory = doc.filter((m: any) => { return m.market.key == key })
+					const data: any = doc
+					data.unshift({ key: "0", name: "ALL" })
+					this.listCategory = data
+					this.loading = false;
+				});
+
+		} else {
+			categoryRef()
+				.where("status.key", "==", 1)
+				.onSnapshot((item: any) => {
+					const doc = pushToArray(item);
+					this.dataCategory = pushToArray(item);
+					const data: any = doc
+					data.unshift({ key: "0", name: "ALL" })
+					this.listCategory = data
+					this.loading = false;
+				});
+		}
+
 	}
 
 	@action
@@ -104,7 +139,10 @@ export default class CategoryStor {
 			this.loading = false;
 		});
 	}
-
+	@action
+	setCategory(item: any) {
+		this.selectedCategory = item
+	}
 	@action
 	async uploadSubPhoto(path: any, callback: any) {
 		this.process = true;
@@ -119,25 +157,25 @@ export default class CategoryStor {
 				this.process = false;
 			})
 			.catch((e: any) => {
-				// console.log('e', e)
 				callback(null);
 			});
 	}
 
 	@action
-	async fetchSubCategory(key?: any, callback?: any) {
-		this.loading = true;
+	async fetchSubCategory(key: any, callback: any) {
+		this.loadingSubCategory = true;
 		if (key) {
-			await subCategoryRef().where('categoryKey', '==', key).onSnapshot((item: any) => {
-				this.dataSubCategory = [];
-				this.dataSubCategory = pushToArray(item);
-				this.loading = false;
-			});
+			await subCategoryRef()
+				.where('status.key', '==', 1)
+				.onSnapshot((item: any) => {
+					const doc = pushToArray(item);
+					this.dataSubCategory = doc.filter((m: any) => { return (m.categoryKey == key) })
+					this.loadingSubCategory = false;
+				});
 		} else {
 			await subCategoryRef().onSnapshot((item: any) => {
-				this.dataSubCategory = [];
 				this.dataSubCategory = pushToArray(item);
-				this.loading = false;
+				this.loadingSubCategory = false;
 				callback(this.dataSubCategory);
 			});
 		}
@@ -148,22 +186,25 @@ export default class CategoryStor {
 		this.loading = true;
 		categoryRef().doc(key).onSnapshot((item) => {
 			this.dataSelectedCategory = pushToObject(item);
-			console.log('this.dataSelectedCategory', this.dataSelectedCategory);
 			this.loading = false;
 		});
 	}
 
 	@action
-	updateCategory(item: any) {
-		categoryRef().doc(item.key).update(item).catch((error) => {
-			console.log('error', error);
-		});
+	updateCategory(item: any, callback: any) {
+		categoryRef().doc(item.key)
+			.update(item)
+			.then(() => {
+				return callback(true)
+			})
+			.catch((error) => {
+				return callback(false)
+			});
 	}
 
 	@action
 	updateSubCategory(item: any) {
 		subCategoryRef().doc(item.key).update(item).catch((error) => {
-			console.log('error', error);
 		});
 	}
 }

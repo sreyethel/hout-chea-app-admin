@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>366086417875-n5m5hfvai55egi2avu6iok2u9i6f1mf6.apps.googleusercontent.com</string>
+	<string>1006840176749-92bsqconn53a0sbbn0r702h2nepa8l20.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.366086417875-n5m5hfvai55egi2avu6iok2u9i6f1mf6</string>
+	<string>com.googleusercontent.apps.1006840176749-92bsqconn53a0sbbn0r702h2nepa8l20</string>
 	<key>API_KEY</key>
-	<string>AIzaSyA407tOwCreSo0jyXWcCiztLTp8kFi2QBk</string>
+	<string>AIzaSyC3rx6E6wx9cG_d2F032QJHcob9UIiFccQ</string>
 	<key>GCM_SENDER_ID</key>
-	<string>366086417875</string>
+	<string>1006840176749</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.phsartech.houtcheaadmin</string>
+	<string>com.vounbunna.seller</string>
 	<key>PROJECT_ID</key>
-	<string>ecommerce-b4ddd</string>
+	<string>bunna-8358f</string>
 	<key>STORAGE_BUCKET</key>
-	<string>ecommerce-b4ddd.appspot.com</string>
+	<string>bunna-8358f.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:366086417875:ios:5bfc33b0a455c06c489326</string>
+	<string>1:1006840176749:ios:523c97593ba50a7db11f64</string>
 	<key>DATABASE_URL</key>
-	<string>https://ecommerce-b4ddd.firebaseio.com</string>
+	<string>https://bunna-8358f.firebaseio.com</string>
 </dict>
 </plist>

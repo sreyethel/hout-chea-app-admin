@@ -34,7 +34,7 @@ export default ({  }: Props) => {
 							value: null,
 							color: '#9EA0A4'
 						}}
-						onValueChange={(value) => console.log(value)}
+						onValueChange={(value) => {}}
 						items={TitleObject}
 					/>
 				<View style={_styles.rows}>

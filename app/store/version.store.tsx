@@ -13,12 +13,8 @@ export default class versionStore {
 		environmentRef().onSnapshot((item: any) => {
 			const docs = pushToArray(item);
 			this.dataVersion = docs[0];
-			console.log('this.dataVersion', this.dataVersion);
 
 			let version = DeviceInfo.getVersion();
-
-			console.log('dataVersion', this.dataVersion.version_android_client);
-			console.log('version', version);
 
 			if (this.dataVersion.isMaintenance) {
 				Alert.alert(

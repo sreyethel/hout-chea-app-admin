@@ -22,14 +22,6 @@ interface Props {
 export default ({ goBack, data, onPress, loading, search, onChangeText, onSearch, searchPlaceHolder }: Props) => {
 	return (
 		<View style={_styles.flx1}>
-			<ArrowBackHeader
-				process={loading}
-				activeSave={false}
-				onGoBack={goBack}
-				title="Select Category"
-				color={modules.WHITE}
-				isWhite={true}
-			/>
 			<InputHeader
 				value={search}
 				onChangeText={onChangeText}

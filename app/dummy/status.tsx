@@ -42,18 +42,38 @@ export const orderStatus = [
 	},
 	{
 		key: 2,
-		name: 'confirm'
+		name: 'confirmed'
 	},
 	{
 		key: 3,
-		name: 'complete'
+		name: 'delivery'
 	},
 	{
 		key: 4,
-		name: 'return'
+		name: 'completed'
 	},
 	{
 		key: 5,
-		name: 'cancel'
+		name: 'return'
+	},
+	{
+		key: 6,
+		name: 'rejected'
 	}
+];
+
+export const Status = [
+	{
+		key: 1,
+		name: 'Active'
+	},
+	{
+		key: 2,
+		name: 'Disable'
+	},
+	{
+		key: 3,
+		name: 'Deleted'
+	},
+
 ];

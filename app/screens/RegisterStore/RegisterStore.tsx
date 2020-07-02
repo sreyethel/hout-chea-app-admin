@@ -33,7 +33,7 @@ interface Props {
 export default ({ onCountry, country, onGoBack, onContinue, process, disabled, phone, onChangePhone }: Props) => {
   return (
     <View style={_styles.containerPrimary}>
-      <ArrowBackHeader
+      {/* <ArrowBackHeader
         process={process}
         disabled={disabled}
         onRight={onContinue}
@@ -41,7 +41,8 @@ export default ({ onCountry, country, onGoBack, onContinue, process, disabled, p
         color={modules.WHITE}
         rightText={"Continue"}
         onGoBack={onGoBack}
-        title={"Create Your Store"} />
+        title={"Create Your Store"} /> */}
+        	<ArrowBackHeader  color={modules.WHITE} title="Create Your Store" onGoBack={onGoBack} />
       <KeyboardAvoidingView style={_styles.containerPrimary} behavior={Platform.OS === 'android' ? undefined : "padding"}>
         <ScrollView style={styles.body}>
           <View style={styles.settings}>

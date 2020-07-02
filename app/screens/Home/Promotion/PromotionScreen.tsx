@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native';
 import _styles from '../../../_styles';
 import Icon from 'react-native-vector-icons/Feather';
 import modules from '../../../modules';
 import Header from '../../../components/Header';
-import BannerCard from '../../../components/BannerCard';
+import Promotion from '../../../components/Promotion';
 import Modal from 'react-native-modal';
 import { fontGSans } from '../../../../functions/customFont';
 
@@ -13,6 +13,7 @@ export interface AppProps {
 	data: any;
 	onEdit: (item: any) => void;
 	onDelete: (item: any) => void;
+	userCanActive:any
 }
 
 export default class PromotionScreen extends React.Component<AppProps, any> {
@@ -24,6 +25,10 @@ export default class PromotionScreen extends React.Component<AppProps, any> {
 	}
 
 	_onShowModal = (item?: any) => {
+		if(!this.props.userCanActive){
+			Alert.alert("Invalid Promotion!")
+			return
+		}
 		this.setState({ modal: !this.state.modal });
 		item ? this.setState({ item: item }) : null;
 	};
@@ -31,26 +36,26 @@ export default class PromotionScreen extends React.Component<AppProps, any> {
 	public render() {
 		return (
 			<View style={[ _styles.flx1, _styles.background ]}>
-				<Header goBack={() => this.props.navigation.goBack()} title="Promotion" />
 				<FlatList
 					ListFooterComponent={() => {
-						return <View style={{ marginBottom: modules.VIEW_PORT_HEIGHT / 4 }} />;
+						return <View style={{ marginBottom: modules.VIEW_PORT_HEIGHT / 4 }}>
+							{
+								this.props.data.length > 0 ? null
+									: <Text style={_styles.noData}>No Data</Text>
+							}
+						</View>;
 					}}
 					data={this.props.data}
 					renderItem={({ item }: any) => {
 						return (
-							<BannerCard
-								clickMore={() => this._onShowModal(item)}
-								image={item.fileUrl}
-								name={item.name}
+							<Promotion
 								index={item.index}
+								data={item}
+								clickMore={()=>{this._onShowModal(item)}}
 							/>
 						);
 					}}
 				/>
-				<TouchableOpacity onPress={() => this.props.navigation.navigate('AddPromotion')} style={styles.chip}>
-					<Icon name="plus" size={modules.FONT_H3} color="#fff" />
-				</TouchableOpacity>
 				<Modal
 					backdropTransitionOutTiming={0}
 					onBackdropPress={() => this._onShowModal()}

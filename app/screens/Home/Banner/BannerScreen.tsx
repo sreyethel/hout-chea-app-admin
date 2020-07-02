@@ -1,18 +1,20 @@
 import * as React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native';
 import _styles from '../../../_styles';
 import Icon from 'react-native-vector-icons/Feather';
 import modules from '../../../modules';
 import Header from '../../../components/Header';
-import BannerCard from '../../../components/BannerCard';
+import BannerCard from '../../../components/Promotion';
 import Modal from 'react-native-modal';
 import { fontGSans } from '../../../../functions/customFont';
+import CardBanner from '../../../components/CardBanner';
 
 export interface AppProps {
 	navigation: any;
 	data: any;
 	onEdit: (item: any) => void;
 	onDelete: (item: any) => void;
+	userCanActive: boolean
 }
 
 export default class BannerScreen extends React.Component<AppProps, any> {
@@ -22,35 +24,46 @@ export default class BannerScreen extends React.Component<AppProps, any> {
 	}
 
 	_onShowModal = (item?: any) => {
+		const { userCanActive } = this.props
+		if (!userCanActive) {
+			Alert.alert("Invalid Banner!")
+			return
+		}
 		this.setState({ modal: !this.state.modal });
 		item ? this.setState({ item: item }) : null;
 	};
 
 	public render() {
 		return (
-			<View style={[ _styles.flx1, _styles.background ]}>
-				<Header goBack={() => this.props.navigation.goBack()} title="Banner" />
-
+			<View style={[_styles.flx1, _styles.background]}>
 				<FlatList
+					showsVerticalScrollIndicator={false}
 					ListFooterComponent={() => {
-						return <View style={{ marginBottom: modules.VIEW_PORT_HEIGHT / 4 }} />;
+						return <View style={{ marginBottom: modules.VIEW_PORT_HEIGHT / 4 }}>
+							{
+								this.props.data.length > 0 ? null
+									: <Text style={_styles.noData}>No Data</Text>
+							}
+						</View>;
 					}}
 					data={this.props.data}
 					renderItem={({ item }: any) => {
 						return (
-							<BannerCard
-								clickMore={() => this._onShowModal(item)}
-								image={item.fileUrl}
+							// <BannerCard
+							// 	clickMore={() => this._onShowModal(item)}
+							// 	image={item.fileUrl}
+							// 	name={item.name}
+							// 	index={item.index}
+							// />
+							<CardBanner
 								name={item.name}
-								index={item.index}
+								image={item.fileUrl}
+								clickMore={() => this._onShowModal(item)}
 							/>
 						);
 					}}
 				/>
 
-				<TouchableOpacity onPress={() => this.props.navigation.navigate('AddBanner')} style={styles.chip}>
-					<Icon name="plus" size={modules.FONT_H3} color="#fff" />
-				</TouchableOpacity>
 				<Modal
 					backdropTransitionOutTiming={0}
 					onBackdropPress={() => this._onShowModal()}

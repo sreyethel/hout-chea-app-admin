@@ -16,7 +16,7 @@ export interface AppProps {
 	onSignOut: any;
 }
 
-export interface AppState {}
+export interface AppState { }
 
 export default class ProfileScreen extends React.Component<AppProps, AppState> {
 	constructor(props: AppProps) {
@@ -28,17 +28,15 @@ export default class ProfileScreen extends React.Component<AppProps, AppState> {
 		const { user } = this.props;
 		return (
 			<View style={styles.profileContainer}>
-				<View style={styles.textContainer}>
-					{user ? (
-						<View>
-							<Text style={styles.textName}>{user.displayName}</Text>
-							<Text style={styles.textPhone}>{user.phoneNumber}</Text>
-							<Text style={styles.textPhone}>{user.email}</Text>
-						</View>
-					) : (
+				{user ? (
+					<View style={[styles.textContainer, { flex: 1 }]}>
+						<Text style={styles.textName}>{user.displayName}</Text>
+						<Text style={styles.textPhone}>{user.phoneNumber}</Text>
+						<Text style={styles.textPhone}>{user.email}</Text>
+					</View>
+				) : (
 						<Text style={styles.textName}>Welcome Member</Text>
 					)}
-				</View>
 				<View style={styles.profileShadow}>
 					{user ? (
 						<View style={styles.ImgContainer}>
@@ -50,16 +48,16 @@ export default class ProfileScreen extends React.Component<AppProps, AppState> {
 							/>
 						</View>
 					) : (
-						<View style={styles.ImgContainer}>
-							<FastImage
-								style={styles.profileImg}
-								source={{
-									uri:
-										'https://images.unsplash.com/photo-1475821660373-587d74229161?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80'
-								}}
-							/>
-						</View>
-					)}
+							<View style={styles.ImgContainer}>
+								<FastImage
+									style={styles.profileImg}
+									source={{
+										uri:
+											'https://images.unsplash.com/photo-1475821660373-587d74229161?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80'
+									}}
+								/>
+							</View>
+						)}
 				</View>
 			</View>
 		);
@@ -85,14 +83,14 @@ export default class ProfileScreen extends React.Component<AppProps, AppState> {
 					<Icon style={styles.arrowIcon} name="chevron-right" />
 				</TouchableOpacity>
 				<TouchableOpacity
-					onPress={() => this.props.navigation.navigate('EDIT_STORE')}
+					onPress={() => this.props.navigation.navigate('AddLocation')}
 					style={styles.settingButton}
 				>
 					<View style={styles.iconContainer}>
-						<MenuIcon style={styles.settingIcon} name="store" />
+						<MenuIcon style={styles.settingIcon} name="map" />
 					</View>
 					<View style={styles.textSettingContainer}>
-						<Text style={styles.settingText}>Store Information</Text>
+						<Text style={styles.settingText}>Store Location</Text>
 						<Text numberOfLines={1} style={styles.settingSubText}>
 							Make Update to your current address.
 						</Text>
@@ -113,22 +111,22 @@ export default class ProfileScreen extends React.Component<AppProps, AppState> {
 						<Icon style={styles.arrowIcon} name="chevron-right" />
 					</TouchableOpacity>
 				) : (
-					<TouchableOpacity
-						onPress={() => this.props.navigation.navigate('LOGIN')}
-						style={styles.settingButton}
-					>
-						<View style={styles.iconContainer}>
-							<MenuIcon style={styles.settingIcon} name="exit_to_app" />
-						</View>
-						<View style={styles.textSettingContainer}>
-							<Text style={styles.settingText}>Sign In</Text>
-							<Text numberOfLines={1} style={styles.settingSubText}>
-								Sign in to system
+						<TouchableOpacity
+							onPress={() => this.props.navigation.navigate('LOGIN')}
+							style={styles.settingButton}
+						>
+							<View style={styles.iconContainer}>
+								<MenuIcon style={styles.settingIcon} name="exit_to_app" />
+							</View>
+							<View style={styles.textSettingContainer}>
+								<Text style={styles.settingText}>Sign In</Text>
+								<Text numberOfLines={1} style={styles.settingSubText}>
+									Sign in to system
 							</Text>
-						</View>
-						<Icon style={styles.arrowIcon} name="chevron-right" />
-					</TouchableOpacity>
-				)}
+							</View>
+							<Icon style={styles.arrowIcon} name="chevron-right" />
+						</TouchableOpacity>
+					)}
 			</View>
 		);
 	};
@@ -137,8 +135,7 @@ export default class ProfileScreen extends React.Component<AppProps, AppState> {
 
 	public render() {
 		return (
-			<View style={[ _styles.flx1, _styles.background ]}>
-				<Header goBack={() => this.props.navigation.goBack()} title="Account" />
+			<View style={[_styles.flx1, _styles.background]}>
 				{this._renderProfile()}
 				{this._renderAccountSetting()}
 			</View>
@@ -205,9 +202,9 @@ const styles = StyleSheet.create({
 		borderRadius: MODULE.VIEW_PORT_WIDTH / 4 / 2
 	},
 	textContainer: {
-		marginTop: MODULE.BODY_HORIZONTAL,
-		alignItems: 'center',
-		justifyContent: 'center'
+		// marginTop: MODULE.BODY_HORIZONTAL,
+		// alignItems: 'center',
+		// justifyContent: 'center'
 	},
 	textName: {
 		fontSize: MODULE.FONT_H6,

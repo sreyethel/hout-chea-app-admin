@@ -43,14 +43,14 @@ export default class AddGalleryScreen extends React.Component<AppProps, any> {
 		return (
 			<View style={_styles.flx1}>
 				{this._renderLoading()}
-				<ArrowBackHeader
+				{/* <ArrowBackHeader
 					activeSave={false}
 					onGoBack={this.props.goBack}
 					title="Add New Product"
 					color={modules.WHITE}
 					// onRight={this.props.onSave}
 					rightText={'Save'}
-				/>
+				/> */}
 
 				<View style={styles.container}>
 					<View style={[ _styles.rows, { padding: modules.BODY_HORIZONTAL } ]}>

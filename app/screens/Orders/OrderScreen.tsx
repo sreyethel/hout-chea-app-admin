@@ -1,113 +1,131 @@
-import * as React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, Text, SafeAreaView, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import MODULE from '../../modules';
 import Header from '../../components/Header';
-import { fontBold } from '../../../functions/customFont';
+// import { } from 'react-native-gesture-handler';
+import { fontSemiBold } from '../../../functions/customFont';
 import _styles from '../../_styles';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import OrderCard from '../../components/OrderCard';
 import moment from 'moment';
-import LinearGradient from 'react-native-linear-gradient';
-import modules from '../../modules';
+import { ORDER } from '../../dummy/order';
+import RnOrder from '../../components/RnOrder';
 
-export interface AppProps {
-	navigation: any;
+interface Props {
+	onOrderByStatus: (doc: any) => void;
+	onOrderReject: () => void;
 	onOrderDetail: (item: any) => void;
+	navigation: any;
 	dataOrder: any;
-	onOrderByStatus: (key: any) => void;
+
+	loading: boolean
 }
-export interface AppState {}
 
-export default class OrderScreen extends React.PureComponent<AppProps, AppState> {
-	constructor(props: AppProps) {
-		super(props);
-		this.state = {};
-	}
+export default ({ dataOrder, loading, onOrderByStatus, onOrderDetail, onOrderReject }: Props) => {
+	const [selected, setSelected] = useState(ORDER[0])
+	const [category, setCategory] = useState([])
+	const [Index, setIndex] = useState(0)
+	return (
+		<View style={[_styles.flx1, _styles.background]}>
+			<View style={_styles.flx1}>
 
-	public render() {
-		const { dataOrder, navigation } = this.props;
-		return (
-			<View style={[ _styles.flx1, _styles.background ]}>
-				<Header goBack={() => navigation.goBack()} title="Order" />
-				<View style={_styles.flx1}>
-					<View
-						style={[
-							_styles.row,
-							{ marginHorizontal: MODULE.BODY_HORIZONTAL / 2, marginVertical: MODULE.BODY_HORIZONTAL }
-						]}
-					>
-						<TouchableOpacity style={_styles.centerMode} onPress={() => this.props.onOrderByStatus(null)}>
-							<LinearGradient
-								start={{ x: 0.0, y: 0 }}
-								end={{ x: 1, y: 1 }}
-								colors={[ '#FFCB23', '#FF9D21' ]}
-								style={styles.orderButton}
-							>
-								<Icon style={[ styles.Icon ]} name="collections-bookmark" />
-								<Text style={styles.textButton}>Orders</Text>
-							</LinearGradient>
-						</TouchableOpacity>
-						<TouchableOpacity style={_styles.centerMode} onPress={() => this.props.onOrderByStatus(2)}>
-							<LinearGradient
-								start={{ x: 0.0, y: 0 }}
-								end={{ x: 1, y: 1 }}
-								colors={[ '#7CD4FF', '#3CABFF' ]}
-								style={styles.orderButton}
-							>
-								<Icon style={[ styles.Icon ]} name="playlist-add" />
-								<Text style={styles.textButton}>Confirme</Text>
-							</LinearGradient>
-						</TouchableOpacity>
-						<TouchableOpacity style={_styles.centerMode} onPress={() => this.props.onOrderByStatus(3)}>
-							<LinearGradient
-								start={{ x: 0.0, y: 0 }}
-								end={{ x: 1, y: 1 }}
-								colors={[ '#86F972', '#34D932' ]}
-								style={styles.orderButton}
-							>
-								<Icon style={[ styles.Icon ]} name="check-box" />
-								<Text style={styles.textButton}>Complete</Text>
-							</LinearGradient>
-						</TouchableOpacity>
-						<TouchableOpacity style={_styles.centerMode} onPress={() => this.props.onOrderByStatus(5)}>
-							<LinearGradient
-								start={{ x: 0.0, y: 0 }}
-								end={{ x: 1, y: 1 }}
-								colors={[ MODULE.PROGRESS_COLOR[3], MODULE.PROGRESS_COLOR_2[3] ]}
-								style={styles.orderButton}
-							>
-								<Icon style={[ styles.Icon ]} name="cancel" />
-								<Text style={styles.textButton}>Cancel</Text>
-							</LinearGradient>
-						</TouchableOpacity>
-					</View>
-					<Text style={styles.textOrder}>Recent Orders</Text>
-					<ScrollView>
-						<View style={styles.orderContainer}>
-							{dataOrder.map((i: any, index: any) => {
-								return (
-									<OrderCard
-										key={index}
-										name={i.item.name}
-										uri={i.item.cover}
-										date={moment(i.order_date.toDate()).format('DD MMMM YYYY')}
-										qty={i.qty}
-										price={i.item.price}
-										total={i.item.price * i.qty}
-										status={i.order_status.name}
-										click={() => this.props.onOrderDetail(i)}
-									/>
-								);
-							})}
-						</View>
-					</ScrollView>
+				<View style={[_styles.row, { marginHorizontal: MODULE.BODY_HORIZONTAL / 2 }]}>
+
+					{
+						ORDER.map((item, index) => {
+							return (
+								<RnOrder
+									key={index}
+									click={() =>
+										_onSelected(
+											item, setSelected,
+											index, setIndex,
+											category, setCategory,
+											onOrderByStatus
+										)
+									}
+									color={item.icon_color}
+									iconName={item.icon}
+									name={item.name}
+									step={item.step}
+									style={Index == index ? styles.btnSelected : styles.notSelected}
+
+								/>
+							)
+						})
+					}
+
 				</View>
+				<View style={{ backgroundColor: MODULE.WHITE, padding: 16, flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderColor: MODULE.BORDER_COLOR }}>
+					<Text style={styles.textOrder}>Recent Orders</Text>
+					<View style={{ flex: 1 }} />
+					<TouchableOpacity
+						onPress={onOrderReject}
+					>
+						<Text style={{ color: MODULE.SUB_TEXT, fontSize: 12 }}>( Reject )</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						onPress={onOrderReject}
+					>
+						<Icon name="exclamation-circle" style={{ color: MODULE.RED, fontSize: 24, paddingLeft: 12 }} />
+					</TouchableOpacity>
+				</View>
+				{
+					dataOrder.length <= 0 ? <Text style={{ textAlign: 'center', margin: 12 }}>No Data</Text>
+						: null
+				}
+				{
+					loading ? <ActivityIndicator />
+						:
+						<ScrollView
+							showsVerticalScrollIndicator={false}
+						>
+							<View style={styles.orderContainer}>
+								{dataOrder.map((i: any, index: any) => {
+									return (
+										<OrderCard
+											key={index}
+											data={i}
+											onDetail={() => onOrderDetail(i)}
+										/>
+									);
+								})}
+							</View>
+						</ScrollView>
+				}
+
+
 			</View>
-		);
-	}
+
+		</View>
+	);
 }
 
+const _onSelected = (
+	selected: any,
+	setSelected: any,
+	index: any,
+	setIndex: any,
+	category: any,
+	setCategory: any,
+	onOrderByStatus: any
+) => {
+	setSelected(selected);
+	setIndex(index);
+	setCategory(category);
+	onOrderByStatus(selected)
+
+};
 const styles = StyleSheet.create({
+	btnSelected: {
+		// backgroundColor: MODULE.BORDER_COLOR,
+		borderWidth: 1,
+		borderColor: MODULE.PRIMARY
+	},
+	notSelected: {
+		backgroundColor: MODULE.WHITE,
+
+	},
 	headerContainer: {
 		backgroundColor: MODULE.COLOR_MAIN
 	},
@@ -116,9 +134,9 @@ const styles = StyleSheet.create({
 	},
 	textOrder: {
 		fontSize: 16,
-
+		...fontSemiBold,
 		color: '#2b2b2b',
-		padding: MODULE.BODY_HORIZONTAL_12,
+		// padding: MODULE.BODY_HORIZONTAL_12,
 		backgroundColor: MODULE.WHITE
 	},
 	orderButton: {
@@ -128,18 +146,17 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		backgroundColor: MODULE.WHITE,
 		marginHorizontal: MODULE.BODY_HORIZONTAL / 2,
+		marginVertical: MODULE.BODY_HORIZONTAL,
 		borderRadius: MODULE.RADIUS / 2
 	},
 	Icon: {
-		fontSize: MODULE.FONT_H2,
-
-		color: modules.WHITE
+		fontSize: MODULE.FONT_H2 - 3,
+		marginBottom: MODULE.BODY_HORIZONTAL / 2
 	},
 	textButton: {
-		fontSize: MODULE.FONT_S,
-		color: modules.WHITE,
-		...fontBold,
-		marginTop: modules.BODY_HORIZONTAL / 2
+		fontSize: MODULE.FONT_S - 1,
+		color: '#555',
+		...fontSemiBold
 	},
 	orderContainer: {
 		flex: 1

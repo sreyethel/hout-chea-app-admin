@@ -19,7 +19,7 @@ interface Props {
 export default ({ goBack, process, onContinue, name, onChangeName, disabled }: Props) => {
 	return (
 		<View style={_styles.containerPrimary}>
-			<ArrowBackHeader
+			{/* <ArrowBackHeader
 				arrowIcon="x-circle"
 				borderBottomWidth={1}
 				onRight={onContinue}
@@ -30,7 +30,8 @@ export default ({ goBack, process, onContinue, name, onChangeName, disabled }: P
 				isWhite={true}
 				title="Create Your Store"
 				onGoBack={goBack}
-			/>
+			/> */}
+			 	<ArrowBackHeader  color={modules.WHITE} title="Create Your Store" onGoBack={goBack} />
 			<KeyboardAvoidingView style={_styles.containerPrimary} behavior="padding">
 				<View style={styles.header}>
 					<Text style={styles.title}>Build your business</Text>

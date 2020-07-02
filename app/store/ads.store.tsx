@@ -1,7 +1,8 @@
 import { action, observable } from 'mobx';
-import { bannerRef, createId, promotionRef, posterRef } from '../services/data.service';
+import { bannerRef, createId, promotionRef, posterRef, firestore, productRef } from '../services/data.service';
 import { storageRef } from '../services/storage.service';
-import { pushToArray } from '../services/mapping.service';
+import { pushToArray, StatusObject } from '../services/mapping.service';
+import firebase from 'react-native-firebase';
 
 export default class AdsStore {
 	@observable loading: boolean = false;
@@ -20,7 +21,6 @@ export default class AdsStore {
 				this.loading = false;
 			})
 			.catch((error) => {
-				console.log('error', error);
 			});
 	}
 
@@ -38,7 +38,6 @@ export default class AdsStore {
 				this.process = false;
 			})
 			.catch((e: any) => {
-				// console.log('e', e)
 				callback(null);
 			});
 	}
@@ -46,24 +45,30 @@ export default class AdsStore {
 	@action
 	fetchBanner() {
 		this.loading = true;
-		bannerRef().orderBy('index', 'ASC').onSnapshot((item) => {
-			this.dataBanner = pushToArray(item);
-			this.loading = false;
-		});
+		bannerRef()
+			.where("status.key", "==", 1)
+			.orderBy('index', 'ASC')
+			.onSnapshot((item) => {
+				this.dataBanner = pushToArray(item);
+				this.loading = false;
+			});
 	}
 
 	@action
-	deleteBanner(item: any) {
+	deleteBanner(user: any, key: string) {
 		this.loading = true;
-		item.fileUrl ? this.deleteFile(item.fileUrl) : null;
+		const item = {
+			status: StatusObject().DELETED,
+			deleted_by: user,
+			deleted_date: new Date(),
+		}
 		bannerRef()
-			.doc(item.key)
-			.delete()
+			.doc(key)
+			.update(item)
 			.then(() => {
 				this.loading = false;
 			})
 			.catch((error) => {
-				console.log('error', error);
 			});
 	}
 
@@ -73,10 +78,8 @@ export default class AdsStore {
 			.refFromURL(url)
 			.delete()
 			.then(() => {
-				console.log('delete file success');
 			})
 			.catch((error) => {
-				console.log('error', error);
 			});
 	}
 
@@ -93,17 +96,28 @@ export default class AdsStore {
 	}
 
 	@action
-	savePromotion(item: any) {
+	savePromotion(item: any, callback: any) {
 		this.loading = true;
-		promotionRef()
-			.doc(item.key)
-			.set(item)
+		const batch = firestore().batch();
+		batch.set(promotionRef()
+			.doc(item.key), item)
+		const increment = firebase.firestore.FieldValue.increment(-item.totalQty);
+		const update = {
+			totalQty: increment
+		}
+		batch.update(productRef()
+			.doc(item.key), update)
+		batch
+			.commit()
 			.then(() => {
 				this.loading = false;
+				callback(true);
 			})
-			.catch((error) => {
-				console.log('error', error);
+			.catch((error: any) => {
+				this.loading = false;
+				callback(false);
 			});
+
 	}
 
 	@action
@@ -120,7 +134,6 @@ export default class AdsStore {
 				this.process = false;
 			})
 			.catch((e: any) => {
-				// console.log('e', e)
 				callback(null);
 			});
 	}
@@ -128,41 +141,61 @@ export default class AdsStore {
 	@action
 	fetchPromotion() {
 		this.loading = true;
-		promotionRef().orderBy('index', 'ASC').onSnapshot((item) => {
-			this.dataPromotion = pushToArray(item);
-			this.loading = false;
-		});
-	}
-
-	@action
-	deletePromotion(item: any) {
-		this.loading = true;
-		item.fileUrl ? this.deleteFile(item.fileUrl) : null;
 		promotionRef()
-			.doc(item.key)
-			.delete()
-			.then(() => {
+			.where("status.key", "==", 1)
+			.orderBy('promotion_create_date_key', 'DESC')
+			.onSnapshot((item) => {
+				this.dataPromotion = pushToArray(item);
 				this.loading = false;
-			})
-			.catch((error) => {
-				console.log('error', error);
 			});
 	}
 
 	@action
-	EditPromotion(item: any) {
-		console.log('item', item);
+	deletePromotion(user: any, item: any, callback: any) {
+		this.loading = true;
+		const batch = firestore().batch();
+		const doc = {
+			status: StatusObject().DELETED,
+			deleted_by: user,
+			deleted_date: new Date(),
+		}
+		batch.set(promotionRef()
+			.doc(item.key)
+			, doc)
+		const increment = firebase.firestore.FieldValue.increment(+item.totalQty);
+		const update = {
+			totalQty: increment
+		}
+		batch.update(productRef()
+			.doc(item.key), update)
+		batch
+			.commit()
+			.then(() => {
+				this.loading = false;
+				callback(true);
+			})
+			.catch((error: any) => {
+				this.loading = false;
+				callback(false);
+			});
+
+	}
+
+	@action
+	EditPromotion(item: any, cb: any) {
 		this.process = true;
 		promotionRef()
 			.doc(item.key)
 			.update(item)
 			.then(() => {
 				this.process = false;
+				return cb(true)
 			})
-			.catch((error) => console.log('error', error));
+			.catch((error) => {
+				return cb(false)
+			}
+			);
 	}
-
-	//////Poster ///////////
 
 	@action
 	savePoster(item: any) {
@@ -174,7 +207,6 @@ export default class AdsStore {
 				this.loading = false;
 			})
 			.catch((error) => {
-				console.log('error', error);
 			});
 	}
 
@@ -192,7 +224,6 @@ export default class AdsStore {
 				this.process = false;
 			})
 			.catch((e: any) => {
-				// console.log('e', e)
 				callback(null);
 			});
 	}
@@ -200,30 +231,34 @@ export default class AdsStore {
 	@action
 	fetchPoster() {
 		this.loading = true;
-		posterRef().orderBy('index', 'ASC').onSnapshot((item) => {
-			this.dataPoster = pushToArray(item);
-			this.loading = false;
-		});
+		posterRef()
+			.where("status.key", "==", 1)
+			.orderBy('index', 'ASC').onSnapshot((item) => {
+				this.dataPoster = pushToArray(item);
+				this.loading = false;
+			});
 	}
 
 	@action
-	deletePoster(item: any) {
+	deletePoster(user: any, key: string) {
 		this.loading = true;
-		item.fileUrl ? this.deleteFile(item.fileUrl) : null;
+		const item = {
+			status: StatusObject().DELETED,
+			deleted_by: user,
+			deleted_date: new Date(),
+		}
 		posterRef()
-			.doc(item.key)
-			.delete()
+			.doc(key)
+			.update(item)
 			.then(() => {
 				this.loading = false;
 			})
 			.catch((error) => {
-				console.log('error', error);
 			});
 	}
 
 	@action
 	EditPoster(item: any) {
-		console.log('item', item);
 		this.process = true;
 		posterRef()
 			.doc(item.key)

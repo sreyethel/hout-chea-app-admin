@@ -1,6 +1,9 @@
 import firebase from 'react-native-firebase';
 const db = firebase.firestore();
 
+export function marketRef() {
+	return db.collection('market');
+}
 export function categoryRef() {
 	return db.collection('category');
 }
@@ -44,6 +47,9 @@ export function environmentRef() {
 
 export function storeRef() {
 	return db.collection('store');
+}
+export function saleRef() {
+	return db.collection('sale');
 }
 
 export function validatePhoneNumberRef(phone: string) {

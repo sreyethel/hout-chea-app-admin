@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Image,SafeAreaView } from 'react-native';
 import { OutlinedTextField } from 'react-native-material-textfield';
 import ArrowBackHeader from '../../../../components/ArrowBackHeader';
 import modules from '../../../../modules';
@@ -7,6 +7,7 @@ import _styles from '../../../../_styles';
 
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { fontGSans, FontGSansSemiBold } from '../../../../../functions/customFont';
+import Header from '../../../../components/Header';
 
 export interface AppProps {
 	navigation: any;
@@ -45,14 +46,14 @@ export default class AddLocationScreen extends React.Component<AppProps, any> {
 	public render() {
 		return (
 			<View style={_styles.flx1}>
-				<ArrowBackHeader
-					onGoBack={() => this.props.navigation.goBack()}
-					color={modules.WHITE}
-					process={this.props.loading}
-					arrowIcon="x-circle"
+				<SafeAreaView style={{ backgroundColor: modules.PRIMARY }} />
+				<Header
 					title="Add Location"
-					rightText="save"
-					onRight={() => this.props.onSave()}
+					loading={this.props.loading}
+					onBack={() => this.props.navigation.goBack()}
+					onEdit={true}
+					isEdit={true}
+					onSave={this.props.onSave}
 				/>
 				<View style={styles.formGroups}>
 					<OutlinedTextField

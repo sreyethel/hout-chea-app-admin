@@ -152,7 +152,7 @@ export default class EditUserInformationScreen extends React.Component<AppProps,
 		return (
 			<View style={_styles.flx1}>
 				<SafeAreaView />
-				{this._renderEditProfile()}
+				{/* {this._renderEditProfile()} */}
 				{this._renderBody()}
 				<Modal
 					onBackdropPress={() => this.setState({ modal: !this.state.modal })}

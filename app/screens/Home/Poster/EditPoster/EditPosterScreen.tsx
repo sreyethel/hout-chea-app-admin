@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, TextInput, Text, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet, TextInput, Text, TouchableOpacity, Image,SafeAreaView} from 'react-native';
 import { OutlinedTextField } from 'react-native-material-textfield';
 import ArrowBackHeader from '../../../../components/ArrowBackHeader';
 import modules from '../../../../modules';
@@ -7,6 +7,7 @@ import _styles from '../../../../_styles';
 import FastImage from 'react-native-fast-image';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Header from '../../../../components/Header';
 
 export interface AppProps {
 	navigation: any;
@@ -34,14 +35,14 @@ export default class EditPosterScreen extends React.Component<AppProps, any> {
 	public render() {
 		return (
 			<View>
-				<ArrowBackHeader
-					onGoBack={() => this.props.navigation.goBack()}
-					color={modules.WHITE}
-					process={this.props.loading}
-					arrowIcon="x-circle"
-					title="Edit Poster"
-					rightText="save"
-					onRight={() => this.props.onSave()}
+			<SafeAreaView style={{ backgroundColor: modules.PRIMARY }} />
+				<Header
+					title="Add Poster"
+					loading={this.props.loading}
+					onBack={() => this.props.navigation.goBack()}
+					onEdit={true}
+					isEdit={true}
+					onSave={this.props.onSave}
 				/>
 				<View style={styles.formGroups}>
 					<OutlinedTextField

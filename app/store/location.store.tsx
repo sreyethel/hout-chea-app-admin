@@ -1,13 +1,14 @@
 import { observable, action, toJS } from 'mobx';
-import { locationRef, geoPoint } from '../services/data.service';
+import { locationRef, geoPoint, storeAccountRef } from '../services/data.service';
 import { pushToArray } from '../services/mapping.service';
+import { pushToObject } from '../../functions/src/app/userNoti';
 
 export default class LocationStore {
 	@observable dataLocation: Array<any> = [];
 	@observable loading: boolean = false;
-
+	@observable storeLocation: any = null;
 	@observable coords: any = {
-		
+
 	};
 
 	@action
@@ -28,6 +29,15 @@ export default class LocationStore {
 			this.loading = false;
 		});
 	}
+	@action
+	fetchStoreLocation(store: any) {
+		this.loading = true;
+		storeAccountRef().doc(store.key).onSnapshot((item: any) => {
+			this.storeLocation = pushToObject(item);
+			this.loading = false;
+		});
+	}
+
 
 	@action
 	saveLocation(item: any) {
@@ -39,7 +49,6 @@ export default class LocationStore {
 				this.loading = false;
 			})
 			.catch((error) => {
-				console.log('error', error);
 			});
 	}
 
@@ -53,7 +62,6 @@ export default class LocationStore {
 				this.loading = false;
 			})
 			.catch((error) => {
-				console.log('error', error);
 			});
 	}
 
@@ -67,7 +75,6 @@ export default class LocationStore {
 				this.loading = false;
 			})
 			.catch((error) => {
-				console.log('error', error);
 			});
 	}
 

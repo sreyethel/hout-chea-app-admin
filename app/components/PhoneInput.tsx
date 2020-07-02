@@ -18,7 +18,6 @@ export default ({ onContinue, process }: Props) => {
 		<SafeAreaView style={_styles.flx1}>
 			<View style={styles.body}>
 				<View style={styles.settings}>
-					<Text style={styles.loginText}>Welcome</Text>
 					<Text style={styles.connect}>Welcome to Hout Chea please enter your phone number to continue.</Text>
 				</View>
 				<View style={styles.phone}>

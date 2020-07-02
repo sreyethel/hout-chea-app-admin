@@ -1,29 +1,21 @@
 {
   "project_info": {
-    "project_number": "366086417875",
-    "firebase_url": "https://ecommerce-b4ddd.firebaseio.com",
-    "project_id": "ecommerce-b4ddd",
-    "storage_bucket": "ecommerce-b4ddd.appspot.com"
+    "project_number": "1090791586995",
+    "firebase_url": "https://hout-chea-app.firebaseio.com",
+    "project_id": "hout-chea-app",
+    "storage_bucket": "hout-chea-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:366086417875:android:34e1490eabbe74c2489326",
+        "mobilesdk_app_id": "1:1090791586995:android:0aafc14dfb04f3b5ae04c6",
         "android_client_info": {
           "package_name": "com.houtchea"
         }
       },
       "oauth_client": [
         {
-          "client_id": "366086417875-fl4ood6tk55m9ekg356t4ga34g6ggo5b.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.houtchea",
-            "certificate_hash": "04d91739bca7e82b142f882d0db95c866522ce25"
-          }
-        },
-        {
-          "client_id": "366086417875-qrk7nt1eun59qt9spqhnrtbli6k4f3d0.apps.googleusercontent.com",
+          "client_id": "1090791586995-q87rjp0t82abh8dcbnbtm1222fevg2b3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.houtchea",
@@ -31,35 +23,27 @@
           }
         },
         {
-          "client_id": "366086417875-3o4ve80fc5gt6cbjdn9hdleok2pc0r7l.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.houtchea",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
-          }
-        },
-        {
-          "client_id": "366086417875-mhfl6b05olpp6c47t2nfeq1gpruvi44v.apps.googleusercontent.com",
+          "client_id": "1090791586995-41q9itqkmv9egrpb0kamm7mh5fujcjjq.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCdsaBs7Q7ruwqxvQagw4AU_586ATr8igo"
+          "current_key": "AIzaSyA1oNFmp1w0K9KnxcDb9zBsQHxjsTs28Ew"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "366086417875-mhfl6b05olpp6c47t2nfeq1gpruvi44v.apps.googleusercontent.com",
+              "client_id": "1090791586995-41q9itqkmv9egrpb0kamm7mh5fujcjjq.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "366086417875-n5m5hfvai55egi2avu6iok2u9i6f1mf6.apps.googleusercontent.com",
+              "client_id": "1090791586995-4ufbef2t0t6gjil0qdqp3ktsenfuu9ok.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.phsartech.houtcheaadmin"
+                "bundle_id": "com.phsartech.Mobile.Houtchea"
               }
             }
           ]
@@ -68,34 +52,34 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:366086417875:android:e1e11a633f88cae5489326",
+        "mobilesdk_app_id": "1:1090791586995:android:dcc3c91f491e650aae04c6",
         "android_client_info": {
           "package_name": "com.houtcheaadmin"
         }
       },
       "oauth_client": [
         {
-          "client_id": "366086417875-mhfl6b05olpp6c47t2nfeq1gpruvi44v.apps.googleusercontent.com",
+          "client_id": "1090791586995-41q9itqkmv9egrpb0kamm7mh5fujcjjq.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCdsaBs7Q7ruwqxvQagw4AU_586ATr8igo"
+          "current_key": "AIzaSyA1oNFmp1w0K9KnxcDb9zBsQHxjsTs28Ew"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "366086417875-mhfl6b05olpp6c47t2nfeq1gpruvi44v.apps.googleusercontent.com",
+              "client_id": "1090791586995-41q9itqkmv9egrpb0kamm7mh5fujcjjq.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "366086417875-n5m5hfvai55egi2avu6iok2u9i6f1mf6.apps.googleusercontent.com",
+              "client_id": "1090791586995-4ufbef2t0t6gjil0qdqp3ktsenfuu9ok.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.phsartech.houtcheaadmin"
+                "bundle_id": "com.phsartech.Mobile.Houtchea"
               }
             }
           ]

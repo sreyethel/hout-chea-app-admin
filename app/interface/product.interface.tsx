@@ -8,34 +8,33 @@ export interface IProduct {
 	updated_date?: Date;
 	deleted_by?: any;
 	deleted_date?: Date;
-
+	freeDelivery: boolean;
+	deliveryNote: string;
+	isDiscount: boolean;
+	discount: number;
+	isPromotion: boolean;
+	promotion: number;
+	promotion_expiry_date: Date;
+	promotion_expiry_date_key: number;
 	status: any;
 	name: string;
 	description: string;
-	storeRef: any;
-	price: number;
-	compareToPrice?: number;
-	cost: number;
-	storeOwner: string;
-
+	umPrice: any;
+	unitMeasurement: any
+	varaint: any;
+	totalQty: number;
+	basePrice: number;
 	publicationDate?: Date;
+	market: any
 	categoryRef: any;
-	categoryKey: any;
-
+	category: any;
 	subCategoryRef: any;
-	subCategoryKey: any;
+	subCategory: any;
 
-	color?: Array<any>;
-	finish?: Array<any>;
-	material?: Array<any>;
-	style?: Array<any>;
-	size?: Array<any>;
-	approvalBy?: any;
-	approvalDate?: any;
-	approvedDateKey?: number;
-	isApproved: boolean;
 	gallery: Array<any>;
 	code: string;
 	cover?: string;
 	trending: any;
+
+
 }

@@ -6,6 +6,7 @@ import { inject, observer } from 'mobx-react';
 import { ICategory, ISubCategory } from '../../../interface/category.interface';
 import EditSubCategoryScreen from './EditSubCategoryScreen';
 import { categoryRef } from '../../../services/data.service';
+import { StatusObject } from '../../../services/mapping.service';
 
 interface AppProps extends NavigationStackScreenProps {
 	category: any;
@@ -32,7 +33,7 @@ export default class EditSubCategoryContainer extends React.Component<AppProps, 
 		};
 	}
 
-	componentDidMount() {}
+	componentDidMount() { }
 
 	_onSelectImage = () => {
 		ImagePicker.openPicker({
@@ -55,7 +56,7 @@ export default class EditSubCategoryContainer extends React.Component<AppProps, 
 	};
 
 	_onAddCategory = async () => {
-		await this.setState({ loading: true });
+		this.setState({ loading: true });
 		const { profile } = this.props.auth;
 		const { name, description, path } = this.state;
 		const selectedItem = this.props.navigation.getParam('item');
@@ -71,17 +72,17 @@ export default class EditSubCategoryContainer extends React.Component<AppProps, 
 			name: name ? name : selectedItem.name,
 			description: description ? description : selectedItem.description,
 			fileUrl: selectedItem.fileUrl,
-			status: null
+			status: StatusObject().ACTIVE
 		};
 
 		path
 			? await this.props.category.uploadPhoto(path, (res: any) => {
-					if (res) {
-						item.fileUrl = res;
-					} else {
-						item.fileUrl = selectedItem.fileUrl;
-					}
-				})
+				if (res) {
+					item.fileUrl = res;
+				} else {
+					item.fileUrl = selectedItem.fileUrl;
+				}
+			})
 			: (item.fileUrl = selectedItem.fileUrl);
 
 		await this.props.category.updateSubCategory(item);

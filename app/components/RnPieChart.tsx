@@ -19,7 +19,6 @@ export default ({ dataStatistic, allOrder }: Props) => {
 	const result = dataStatistic.reduce((sum, { value }) => sum + value, 0);
 	const data = dataStatistic.map((item, index) => {
 		const per = item.value * 10 / result;
-		// console.log('item', item.value * 100 / result);
 		return {
 			key: index,
 			value: item.value,
